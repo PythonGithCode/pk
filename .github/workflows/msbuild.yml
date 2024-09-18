@@ -33,8 +33,10 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v3.2.1-node20
+    - uses: actions/upload-artifact@v3
+      with:
+        name: program.exe
+        path: "path/to/program.exe"
 
 
     - name: Build
