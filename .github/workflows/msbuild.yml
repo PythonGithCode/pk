@@ -17,6 +17,12 @@ jobs:
       # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Check for mycode.cpp
+        run: |
+          ls -la src/
+
+
+
 
       # Use vswhere to find Visual Studio and set up MSVC
       - name: Set up MSVC
