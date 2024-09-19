@@ -1,4 +1,5 @@
 #include <iostream>
+#include <windows.h>
 
 #ifdef _WIN32
 #define EXPORT_SYMBOL __declspec(dllexport)
@@ -14,6 +15,3 @@ extern "C" EXPORT_SYMBOL void hello() {
 extern "C" __declspec(dllexport) void CALLBACK hellos(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow) {
     MessageBox(NULL, "Hello, World!", "My DLL", MB_OK);
 }
-
-
-
