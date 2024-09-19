@@ -11,3 +11,9 @@ extern "C" EXPORT_SYMBOL void hello() {
     std::cout << "Hello from DLL!" << std::endl;
 }
 
+extern "C" __declspec(dllexport) void CALLBACK hellos(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow) {
+    MessageBox(NULL, "Hello, World!", "My DLL", MB_OK);
+}
+
+
+
