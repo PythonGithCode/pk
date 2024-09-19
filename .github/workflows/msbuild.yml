@@ -1,4 +1,4 @@
-name: Build DLL
+name: Build and Upload DLL
 
 on:
   push:
@@ -13,26 +13,33 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up MSBuild
-      uses: microsoft/setup-msbuild@v1.0.3
+      # Install dependencies (Visual Studio, CMake, etc.)
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
 
-    - name: Install Visual Studio with C++ support
-      uses: actions/runner-toolcache@v2
-      with:
-        toolName: Visual Studio
-        toolVersion: latest
+      # Install CMake
+      - name: Install CMake
+        uses: jwlawson/actions-setup-cmake@v1
 
-    - name: Compile C++ into DLL
-      run: |
-        cl /LD /Fe:output.dll source.cpp
-      shell: cmd
+      # Configure the project with CMake
+      - name: Configure with CMake
+        run: cmake -B build -DCMAKE_GENERATOR="Visual Studio 16 2019" -A x64
 
-    - name: Upload DLL artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: dll-artifact
-        path: output.dll
+      # Build the DLL using CMake
+      - name: Build DLL
+        run: cmake --build build --config Release --target MyCppProject
+
+      # Upload the DLL as an artifact
+      - name: Upload DLL artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: compiled-dll
+          path: build/Release/MyCppProject.dll
+
 
