@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: compiled-dll
-          path: build/Release/MyCppProject.dll
+          path: D:/a/pk/pk/build/Release/Release/MyCppProject.dll
 
       - name: Check for mycode.cpp
         run: |
