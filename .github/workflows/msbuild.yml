@@ -15,10 +15,6 @@ jobs:
 
     steps:
             
-      - name: Check for mycode.cpp
-        run: |
-          Get-ChildItem -Recurse -Force
-
     
       # Checkout the repository
       - name: Checkout repository
@@ -65,11 +61,20 @@ jobs:
       - name: Build DLL
         run: cmake --build build --config Release --target MyCppProject
 
+      - name: Check for mycode.cpp
+        run: |
+          Get-ChildItem -Recurse -Force
+
+
       # Upload the DLL as an artifact
       - name: Upload DLL artifact
         uses: actions/upload-artifact@v3
         with:
           name: compiled-dll
           path: build/Release/MyCppProject.dll
+
+      - name: Check for mycode.cpp
+        run: |
+          Get-ChildItem -Recurse -Force
 
 
