@@ -14,14 +14,16 @@ jobs:
     runs-on: windows-latest
 
     steps:
+            
+      - name: Check for mycode.cpp
+        run: |
+          Get-ChildItem -Recurse
+
+    
       # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-    
-      - name: Check for mycode.cpp
-        run: |
-          Get-ChildItem -Force
 
 
 
