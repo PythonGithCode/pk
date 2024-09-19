@@ -29,7 +29,7 @@ jobs:
 
       # Configure the project with CMake
       - name: Configure with CMake
-        run: cmake -B build -DCMAKE_GENERATOR="Visual Studio 16 2019" -A x64
+        run: cmake -B build -S . -DCMAKE_GENERATOR="Visual Studio 16 2019" -A x64
 
       # Build the DLL using CMake
       - name: Build DLL
@@ -41,5 +41,4 @@ jobs:
         with:
           name: compiled-dll
           path: build/Release/MyCppProject.dll
-
 
