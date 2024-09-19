@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.10)
 project(MyCppProject VERSION 1.0)
 
 # Set the output type to a shared library (DLL)
-add_library(MyCppProject SHARED "D:\a\pk\pk\scr\mycode.cpp")
+add_library(MyCppProject SHARED "D:/a/pk/pk/scr/mycode.cpp")
 
 # Set the properties for generating the DLL
 set_target_properties(MyCppProject PROPERTIES
