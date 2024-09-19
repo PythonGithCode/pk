@@ -21,7 +21,7 @@ jobs:
     
       - name: Check for mycode.cpp
         run: |
-          Get-ChildItem src -Force
+          Get-ChildItem -Force
 
 
 
