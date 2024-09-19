@@ -1,5 +1,6 @@
 #include <iostream>
 #include <windows.h>
+#include <string>
 
 #ifdef _WIN32
 #define EXPORT_SYMBOL __declspec(dllexport)
