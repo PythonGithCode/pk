@@ -17,7 +17,7 @@ jobs:
             
       - name: Check for mycode.cpp
         run: |
-          Get-ChildItem -Recurse
+          Get-ChildItem -Recurse -Force
 
     
       # Checkout the repository
@@ -38,6 +38,11 @@ jobs:
           # Set up the environment for Visual Studio
           &"$vsInstallPath\Common7\Tools\VsDevCmd.bat" -arch=amd64
 
+      - name: Checkc for mycode.cpp
+        run: |
+          Get-ChildItem -Recurse -Force
+
+
       # Install CMake (if not already installed)
       - name: Install CMake
         uses: jwlawson/actions-setup-cmake@v1
@@ -45,6 +50,11 @@ jobs:
       - name: Check available Visual Studio versions
         run: |
           &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -all
+
+      - name: Check3 for mycode.cpp
+        run: |
+          Get-ChildItem -Recurse -Force
+
 
 
       # Configure the project with CMake
