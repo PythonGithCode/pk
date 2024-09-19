@@ -17,9 +17,12 @@ jobs:
       # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
+
+    
       - name: Check for mycode.cpp
         run: |
-          ls -la src/
+          Get-ChildItem src -Force
+
 
 
 
