@@ -55,6 +55,9 @@ extern "C" __declspec(dllexport) void CALLBACK launchExe(HWND hwnd, HINSTANCE hi
         CloseHandle(pi.hThread);
     } else {
         std::cerr << "Failed to launch executable. Error code: " << GetLastError() << "\n";
+         std::string exePatsh;
+         std::cout << "Enter To Contiune";
+         std::getline(std::cin, exePatsh);  // Get input from the user
     }
 
     // Release the console (for DLLs)
