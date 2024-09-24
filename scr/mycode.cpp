@@ -1,6 +1,7 @@
 #include <iostream>
 #include <windows.h>
 #include <string>
+using namespace std;
 
 #ifdef _WIN32
 #define EXPORT_SYMBOL __declspec(dllexport)
@@ -84,7 +85,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
 }
 
 // Function to show graphics
-extern "C" __declspec(dllexport) void ShowGraphics() {
+extern "C" __declspec(dllexport) void ShowGraphicsDLL() {
     ShowGraphics(); // Create a window and draw
 }
 
@@ -153,8 +154,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 extern "C" __declspec(dllexport) void CALLBACK launchPotato(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow) {
     // Allocate a console for input/output (for DLLs running via rundll32)
     AllocConsole();
-    freopen_s("CONOUT$", "w", stdout);  // Redirect stdout to the console
-    freopen_s("CONIN$", "r", stdin);    // Redirect stdin to the console
+    freopen("CONOUT$", "w", stdout);  // Redirect stdout to the console
+    freopen("CONIN$", "r", stdin);    // Redirect stdin to the console
     
 
     // Ask the user for the executable path
