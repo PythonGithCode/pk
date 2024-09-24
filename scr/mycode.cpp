@@ -8,6 +8,8 @@
 #define EXPORT_SYMBOL
 #endif
 
+
+
 // A simple function to export
 extern "C" EXPORT_SYMBOL void hello() {
     std::cout << "Hello from DLL!" << std::endl;
@@ -66,11 +68,93 @@ extern "C" __declspec(dllexport) void CALLBACK launchExe(HWND hwnd, HINSTANCE hi
 }
 
 
+// Global variables
+HINSTANCE hInst; // Current instance
+
+// Function declarations
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+void ShowGraphics();
+
+// Entry point for the DLL
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
+    if (fdwReason == DLL_PROCESS_ATTACH) {
+        hInst = hinstDLL; // Save instance handle
+    }
+    return TRUE;
+}
+
+// Function to show graphics
+extern "C" __declspec(dllexport) void ShowGraphics() {
+    ShowGraphics(); // Create a window and draw
+}
+
+void ShowGraphics() {
+    // Register the window class
+    const char CLASS_NAME[] = "Sample Window Class";
+
+    WNDCLASS wc = {};
+    wc.lpfnWndProc = WindowProc;
+    wc.hInstance = hInst;
+    wc.lpszClassName = CLASS_NAME;
+
+    RegisterClass(&wc);
+
+    // Create the window
+    HWND hwnd = CreateWindowEx(
+        0,                          // Optional window styles.
+        CLASS_NAME,                 // Window class
+        "Graphics Window",          // Window text
+        WS_OVERLAPPEDWINDOW,        // Window style
+        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+        NULL,                       // Parent window
+        NULL,                       // Menu
+        hInst,                     // Instance handle
+        NULL                        // Additional application data
+    );
+
+    if (hwnd == NULL) {
+        return;
+    }
+
+    ShowWindow(hwnd, SW_SHOWNORMAL);
+    UpdateWindow(hwnd);
+
+    // Main message loop
+    MSG msg;
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+}
+
+// Window procedure to handle messages
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    switch (uMsg) {
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hwnd, &ps);
+
+        // Draw a rectangle
+        Rectangle(hdc, 50, 50, 200, 200);
+
+        EndPaint(hwnd, &ps);
+    }
+    return 0;
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        return 0;
+    }
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
+
+
 extern "C" __declspec(dllexport) void CALLBACK launchPotato(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow) {
     // Allocate a console for input/output (for DLLs running via rundll32)
     AllocConsole();
-    freopen("CONOUT$", "w", stdout);  // Redirect stdout to the console
-    freopen("CONIN$", "r", stdin);    // Redirect stdin to the console
+    freopen_s("CONOUT$", "w", stdout);  // Redirect stdout to the console
+    freopen_s("CONIN$", "r", stdin);    // Redirect stdin to the console
     
 
     // Ask the user for the executable path
