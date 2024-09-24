@@ -70,6 +70,13 @@ extern "C" __declspec(dllexport) void CALLBACK launchExe(HWND hwnd, HINSTANCE hi
 
 
 // Global variables
+
+
+// Global variables for rectangle position
+int rectX = 50, rectY = 50, rectWidth = 150, rectHeight = 150;
+int moveSpeed = 5; // Movement speed
+
+
 HINSTANCE hInst; // Current instance
 
 // Function declarations
@@ -128,26 +135,57 @@ void ShowGraphics() {
     }
 }
 
-// Window procedure to handle messages
+// Handle the window messages, including keyboard input
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
-    case WM_PAINT:
-    {
+    case WM_PAINT: {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
 
-        // Draw a rectangle
-        Rectangle(hdc, 50, 50, 200, 200);
+        // Draw the rectangle at the current position
+        Rectangle(hdc, rectX, rectY, rectX + rectWidth, rectY + rectHeight);
 
         EndPaint(hwnd, &ps);
     }
     return 0;
+
+    case WM_KEYDOWN: {
+        // Handle movement based on WASD keys
+        bool redraw = false;
+
+        if (GetAsyncKeyState('W') & 0x8000) { // Move up
+            rectY -= moveSpeed;
+            redraw = true;
+        }
+        if (GetAsyncKeyState('S') & 0x8000) { // Move down
+            rectY += moveSpeed;
+            redraw = true;
+        }
+        if (GetAsyncKeyState('A') & 0x8000) { // Move left
+            rectX -= moveSpeed;
+            redraw = true;
+        }
+        if (GetAsyncKeyState('D') & 0x8000) { // Move right
+            rectX += moveSpeed;
+            redraw = true;
+        }
+
+        // Redraw the window if any key was pressed
+        if (redraw) {
+            InvalidateRect(hwnd, NULL, TRUE);
+        }
+    }
+    return 0;
+
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
+
+    default:
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
-    return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
+
 
 
 
@@ -174,6 +212,11 @@ extern "C" __declspec(dllexport) void CALLBACK launchPotato(HWND hwnd, HINSTANCE
         std::cout << endl << "Bye";
     }
 
+
+    // end
+    std::cout << "Exit Console." << endl;
+    std::getline(std::cin, text);  // Get input from the user 
+    
     // Release the console (for DLLs)
     FreeConsole();
 }
