@@ -148,7 +148,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             // Draw the rectangle at the current position
             Rectangle(hdc, rectX, rectY, rectX + rectWidth, rectY + rectHeight);
         } else if ( typeOfShape = 1 ) {
-            Circle(hdc, rectX, rectY, rectX + rectWidth, rectY + rectHeight);
+            Ellipse(hdc, rectX, rectY, rectX + rectWidth, rectY + rectHeight);
         } else {
             Rectangle(hdc, rectX, rectY, rectX + rectWidth, rectY + rectHeight);
         }
