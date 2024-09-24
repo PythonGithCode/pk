@@ -144,10 +144,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         HDC hdc = BeginPaint(hwnd, &ps);
 
         // draw shaprs
-        if ( typeOfShape = 0 ) {
+        if ( typeOfShape == 0 ) {
             // Draw the rectangle at the current position
             Rectangle(hdc, rectX, rectY, rectX + rectWidth, rectY + rectHeight);
-        } else if ( typeOfShape = 1 ) {
+        } else if ( typeOfShape == 1 ) {
             Ellipse(hdc, rectX, rectY, rectX + rectWidth, rectY + rectHeight);
         } else {
             Rectangle(hdc, rectX, rectY, rectX + rectWidth, rectY + rectHeight);
@@ -178,13 +178,20 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             redraw = true;
         }
         
-        if (GetAsyncKeyState('Q') & 0x8000) { // Move right
+        if (GetAsyncKeyState('Q') & 0x8000) { // Move shape
             typeOfShape += 1;
             redraw = true;
         }
-        if (GetAsyncKeyState('E') & 0x8000) { // Move right
+        if (GetAsyncKeyState('E') & 0x8000) { // less shape
             typeOfShape -= 1;
             redraw = true;
+        }
+
+         if (GetAsyncKeyState('J') & 0x8000) { // More speed
+            moveSpeed += 1;
+        }
+        if (GetAsyncKeyState('K') & 0x8000) { // Less speed
+            moveSpeed -= 1;
         }
 
         // Redraw the window if any key was pressed
