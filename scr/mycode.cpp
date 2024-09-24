@@ -66,4 +66,31 @@ extern "C" __declspec(dllexport) void CALLBACK launchExe(HWND hwnd, HINSTANCE hi
 }
 
 
+extern "C" __declspec(dllexport) void CALLBACK launchPotato(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow) {
+    // Allocate a console for input/output (for DLLs running via rundll32)
+    AllocConsole();
+    freopen("CONOUT$", "w", stdout);  // Redirect stdout to the console
+    freopen("CONIN$", "r", stdin);    // Redirect stdin to the console
+    
+
+    // Ask the user for the executable path
+    std::string text;
+    std::cout << "Please Press Enter?" << endl;
+    std::getline(std::cin, text);  // Get input from the user
+
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    
+    // check for enter
+    if (text.length() > 0) {
+        SetConsoleTextAttribute(hConsole, 2);
+        std::cout << "Thank You!";
+        SetConsoleTextAttribute(hConsole, 0);
+    } else {
+        std::cout << endl << "Bye";
+    }
+
+    // Release the console (for DLLs)
+    FreeConsole();
+}
+
 
