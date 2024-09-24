@@ -192,9 +192,11 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
          if (GetAsyncKeyState('J') & 0x8000) { // More speed
             moveSpeed += 1;
+            redraw = true;
         }
         if (GetAsyncKeyState('K') & 0x8000) { // Less speed
             moveSpeed -= 1;
+            redraw = true;
         }
 
         if (GetAsyncKeyState('L') & 0x8000) { // start over stuff
@@ -205,23 +207,28 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             moveSpeed = 5; // Movement speed
             rectX = 50;
             rectY = 50;
+            
+            redraw = true;
         }
         
         if (GetAsyncKeyState('G') & 0x8000) { // Is gravity
             isGravity = !isGravity;
+            redraw = true;
         }
         
         if (GetAsyncKeyState('C') & 0x8000) { // Is gravity
             isJump = true;
             timeFalling = 0;
             rectY += 5 * moveSpeed;
+            redraw = true;
         }
 
 
         // Gravity
         if (isGravity) {
             timeFalling++;
-            rectY += -4 * ( timeFalling * timeFalling );
+            rectY += -1.05 * ( timeFalling * timeFalling );
+            redraw = true;
         }
         
         // Redraw the window if any key was pressed
