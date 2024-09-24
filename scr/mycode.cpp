@@ -75,6 +75,7 @@ extern "C" __declspec(dllexport) void CALLBACK launchExe(HWND hwnd, HINSTANCE hi
 // Global variables for rectangle position
 int rectX = 50, rectY = 50, rectWidth = 150, rectHeight = 150;
 int moveSpeed = 5; // Movement speed
+short typeOfShape = 0;
 
 
 HINSTANCE hInst; // Current instance
@@ -142,9 +143,16 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
 
-        // Draw the rectangle at the current position
-        Rectangle(hdc, rectX, rectY, rectX + rectWidth, rectY + rectHeight);
-
+        // draw shaprs
+        if ( typeOfShape = 0 ) {
+            // Draw the rectangle at the current position
+            Rectangle(hdc, rectX, rectY, rectX + rectWidth, rectY + rectHeight);
+        } else if ( typeOfShape = 1 ) {
+            Circle(hdc, rectX, rectY, rectX + rectWidth, rectY + rectHeight);
+        } else {
+            Rectangle(hdc, rectX, rectY, rectX + rectWidth, rectY + rectHeight);
+        }
+        
         EndPaint(hwnd, &ps);
     }
     return 0;
@@ -167,6 +175,15 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         }
         if (GetAsyncKeyState('D') & 0x8000) { // Move right
             rectX += moveSpeed;
+            redraw = true;
+        }
+        
+        if (GetAsyncKeyState('Q') & 0x8000) { // Move right
+            typeOfShape += 1;
+            redraw = true;
+        }
+        if (GetAsyncKeyState('E') & 0x8000) { // Move right
+            typeOfShape -= 1;
             redraw = true;
         }
 
@@ -206,10 +223,10 @@ extern "C" __declspec(dllexport) void CALLBACK launchPotato(HWND hwnd, HINSTANCE
     // check for enter
     if (text.length() > 0) {
         SetConsoleTextAttribute(hConsole, 2);
-        std::cout << "Thank You!";
+        std::cout << "Thank You!" << std::endl;
         SetConsoleTextAttribute(hConsole, 0);
     } else {
-        std::cout << endl << "Bye";
+        std::cout << endl << "Bye" << endl;
     }
 
 
