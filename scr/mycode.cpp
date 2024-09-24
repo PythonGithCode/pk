@@ -73,9 +73,12 @@ extern "C" __declspec(dllexport) void CALLBACK launchExe(HWND hwnd, HINSTANCE hi
 
 
 // Global variables for rectangle position
+bool isGravity = false;
+bool isJump = false;
+short typeOfShape = 0;
+short timeFalling = 0;
 int rectX = 50, rectY = 50, rectWidth = 150, rectHeight = 150;
 int moveSpeed = 5; // Movement speed
-short typeOfShape = 0;
 
 
 HINSTANCE hInst; // Current instance
@@ -143,7 +146,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
 
-        // draw shaprs
+        // draw shapes
         if ( typeOfShape == 0 ) {
             // Draw the rectangle at the current position
             Rectangle(hdc, rectX, rectY, rectX + rectWidth, rectY + rectHeight);
@@ -194,6 +197,33 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             moveSpeed -= 1;
         }
 
+        if (GetAsyncKeyState('L') & 0x8000) { // start over stuff
+            isJump = false;
+            isGravity = false;
+            typeOfShape = 0;
+            timeFalling = 0;
+            moveSpeed = 5; // Movement speed
+            rectX = 50;
+            rectY = 50;
+        }
+        
+        if (GetAsyncKeyState('G') & 0x8000) { // Is gravity
+            isGravity = !isGravity;
+        }
+        
+        if (GetAsyncKeyState('C') & 0x8000) { // Is gravity
+            isJump = true;
+            timeFalling = 0;
+            rectY += 5 * moveSpeed;
+        }
+
+
+        // Gravity
+        if (isGravity) {
+            timeFalling++;
+            rextY += -4( timeFalling * timeFalling );
+        }
+        
         // Redraw the window if any key was pressed
         if (redraw) {
             InvalidateRect(hwnd, NULL, TRUE);
@@ -226,6 +256,7 @@ extern "C" __declspec(dllexport) void CALLBACK launchPotato(HWND hwnd, HINSTANCE
     std::getline(std::cin, text);  // Get input from the user
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
     
     // check for enter
     if (text.length() > 0) {
