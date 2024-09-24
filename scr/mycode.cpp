@@ -221,7 +221,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         // Gravity
         if (isGravity) {
             timeFalling++;
-            rectY += -4( timeFalling * timeFalling );
+            rectY += -4 * ( timeFalling * timeFalling );
         }
         
         // Redraw the window if any key was pressed
