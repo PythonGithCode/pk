@@ -1,7 +1,7 @@
 #include <iostream>
 #include <windows.h>
 #include <string>
-#include<math.h> 
+#include <math.h> 
 
 using namespace std;
 
@@ -184,7 +184,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
     case WM_KEYDOWN: {
         // Handle movement based on WASD keys
-        bool redraw = false;
+        // bool redraw = false;
         RECT windowRect;
         GetClientRect(hwnd, &windowRect);
         int windowHeight = windowRect.bottom - windowRect.top;   
@@ -193,37 +193,37 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
         if (GetAsyncKeyState('W') & 0x8000) { // Move up
             rectY -= moveSpeed;
-            redraw = true;
+            // redraw = true;
         }
         if (GetAsyncKeyState('S') & 0x8000) { // Move down
             rectY += moveSpeed;
-            redraw = true;
+            // redraw = true;
         }
         if (GetAsyncKeyState('A') & 0x8000) { // Move left
             rectX -= moveSpeed;
-            redraw = true;
+            // redraw = true;
         }
         if (GetAsyncKeyState('D') & 0x8000) { // Move right
             rectX += moveSpeed;
-            redraw = true;
+            // redraw = true;
         }
         
         if (GetAsyncKeyState('Q') & 0x8000) { // Move shape
             typeOfShape += 1;
-            redraw = true;
+            // redraw = true;
         }
         if (GetAsyncKeyState('E') & 0x8000) { // less shape
             typeOfShape -= 1;
-            redraw = true;
+            // redraw = true;
         }
 
          if (GetAsyncKeyState('J') & 0x8000) { // More speed
             moveSpeed += 1;
-            redraw = true;
+            // redraw = true;
         }
         if (GetAsyncKeyState('K') & 0x8000) { // Less speed
             moveSpeed -= 1;
-            redraw = true;
+            // redraw = true;
         }
 
         if (GetAsyncKeyState('L') & 0x8000) { // start over stuff
@@ -252,45 +252,44 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             // windowWidth  = windowRect.right  - windowRect.left;
             // windowHeight = windowRect.bottom - windowRect.top;
             
-            redraw = true;
+            // redraw = true;
         }
         
         if (GetAsyncKeyState('G') & 0x8000) { // Is gravity
             isGravity = !isGravity;
-            redraw = true;
+            // redraw = true;
         }
         
         if (GetAsyncKeyState('C') & 0x8000) { // Is gravity
             isJump = true;
             timeFalling = 0;
             rectY -= 5 * moveSpeed;
-            redraw = true;
+            // redraw = true;
         }
 
 
         // Gravity
         if (isGravity) {
             timeFalling++;
-            d_rectY += 1.05 * ( timeFalling * timeFalling );
+            d_rectY += 0.15 * ( timeFalling * timeFalling );
             rectY = (int) round(d_rectY);
 
             RECT windowRect;
             GetClientRect(hwnd, &windowRect);
             int windowHeight = windowRect.bottom - windowRect.top;   
             // int windowWidth = windowRect.right - windowRect.left;
+            
             // IS it at the bottom
-            if ( rectY > windowHeight ) {
+            if ( rectY > ( windowHeight - rectHeight ) ) { // offset
                 rectY = windowHeight;
                 timeFalling = 0;
                 
             }
-            redraw = true;
+            // redraw = true;
         }
         
         // Redraw the window if any key was pressed
-        if (redraw) {
-            InvalidateRect(hwnd, NULL, TRUE);
-        }
+        InvalidateRect(hwnd, NULL, TRUE);
     }
     return 0;
 
