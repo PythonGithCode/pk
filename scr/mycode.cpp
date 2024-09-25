@@ -185,6 +185,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     case WM_KEYDOWN: {
         // Handle movement based on WASD keys
         bool redraw = false;
+        RECT windowRect;
+        GetClientRect(hwnd, &windowRect);
+        int windowWidth = windowRect.right - windowRect.left;
         
 
         if (GetAsyncKeyState('W') & 0x8000) { // Move up
@@ -235,10 +238,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
             
             // if (!declareds) {
-            RECT windowRect;
-            GetClientRect(hwnd, &windowRect);
-            int windowWidth = windowRect.right - windowRect.left;
-            int windowHeight = windowRect.bottom - windowRect.top;   
+            // RECT windowRect;
+            // GetClientRect(hwnd, &windowRect);
+            // int windowWidth = windowRect.right - windowRect.left;
+            // int windowHeight = windowRect.bottom - windowRect.top;   
             // } else {
             //     windowWidth = windowRect.right - windowRect.left;
             //     windowHeight = windowRect.bottom - windowRect.top;   
@@ -272,6 +275,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
             // IS it at the bottom
             if ( rectY > windowHeight ) {
+                RECT windowRect;
+                GetClientRect(hwnd, &windowRect);
+                int windowWidth = windowRect.right - windowRect.left;
                 rectY = windowHeight;
                 timeFalling = 0;
                 
