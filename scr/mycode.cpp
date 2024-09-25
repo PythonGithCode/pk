@@ -1,6 +1,8 @@
 #include <iostream>
 #include <windows.h>
 #include <string>
+#include<math.h> 
+
 using namespace std;
 
 #ifdef _WIN32
@@ -81,13 +83,9 @@ int rectX = 50;
 int rectWidth = 150;
 int rectHeight = 150;
 int moveSpeed = 5; // Movement speed
-double rectY = 50;
+int rectY = 50;
+double d_rectY = rectY;
 
-RECT windowRect;
-GetClientRect(hwnd, &windowRect);
-
-int windowWidth = windowRect.right - windowRect.left;
-int windowHeight = windowRect.bottom - windowRect.top;
 
 
 HINSTANCE hInst; // Current instance
@@ -132,6 +130,12 @@ void ShowGraphics() {
         hInst,                     // Instance handle
         NULL                        // Additional application data
     );
+    RECT windowRect;
+    GetClientRect(hwnd, &windowRect);
+    
+    int windowWidth = windowRect.right - windowRect.left;
+    int windowHeight = windowRect.bottom - windowRect.top;
+
 
     if (hwnd == NULL) {
         return;
@@ -216,6 +220,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             moveSpeed = 5; // Movement speed
             rectX = 50;
             rectY = 50;
+            double d_rectY = rectY;
+
             
             // GetClientRect(hwnd, &windowRect);
             windowWidth  = windowRect.right  - windowRect.left;
@@ -240,7 +246,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         // Gravity
         if (isGravity) {
             timeFalling++;
-            rectY += 1.05 * ( timeFalling * timeFalling );
+            d_rectY += 1.05 * ( timeFalling * timeFalling );
+            rectY = round(d_rectY);
 
             // IS it at the bottom
             if ( rectY > windowHeight ) {
