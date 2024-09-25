@@ -15,7 +15,7 @@ using namespace std;
 LARGE_INTEGER frequency;
 LARGE_INTEGER lastTime;
 int frameCount = 0;
-float fps = 0.0f;
+double fps = 0;
 
 QueryPerformanceFrequency(&frequency);
 QueryPerformanceCounter(&lastTime);
@@ -210,7 +210,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         }
 
         // text
-        char* text = "words";
+        // char* text = "words";
         short posTextX = 10, posTextY = 30;
         
         //text coulr
