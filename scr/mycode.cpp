@@ -11,7 +11,7 @@ using namespace std;
 #define EXPORT_SYMBOL
 #endif
 
-
+bool declareds = false;
 
 // A simple function to export
 extern "C" EXPORT_SYMBOL void hello() {
@@ -77,6 +77,7 @@ extern "C" __declspec(dllexport) void CALLBACK launchExe(HWND hwnd, HINSTANCE hi
 // Global variables for rectangle position
 bool isGravity = false;
 bool isJump = false;
+
 short typeOfShape = 0;
 short timeFalling = 0;
 int rectX = 50;
@@ -132,19 +133,23 @@ void ShowGraphics() {
         hInst,                     // Instance handle
         NULL                        // Additional application data
     );
+
+    if (hwnd == NULL) {
+        return;
+    }
+    
+
+    ShowWindow(hwnd, SW_SHOWNORMAL);
+    UpdateWindow(hwnd);
+
+
+    
     RECT windowRect;
     GetClientRect(hwnd, &windowRect);
     
     int windowWidth = windowRect.right - windowRect.left;
     int windowHeight = windowRect.bottom - windowRect.top;
-
-
-    if (hwnd == NULL) {
-        return;
-    }
-
-    ShowWindow(hwnd, SW_SHOWNORMAL);
-    UpdateWindow(hwnd);
+    declareds = true;
 
     // Main message loop
     MSG msg;
@@ -178,6 +183,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     case WM_KEYDOWN: {
         // Handle movement based on WASD keys
         bool redraw = false;
+        if (!declareds) {
+            int windowWidth = windowRect.right - windowRect.left;
+            int windowHeight = windowRect.bottom - windowRect.top;
+        }
 
         if (GetAsyncKeyState('W') & 0x8000) { // Move up
             rectY -= moveSpeed;
@@ -222,7 +231,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             moveSpeed = 5; // Movement speed
             rectX = 50;
             rectY = 50;
-            double d_rectY = rectY;
+            d_rectY = rectY;
 
             
             // GetClientRect(hwnd, &windowRect);
