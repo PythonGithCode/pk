@@ -178,6 +178,18 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         } else {
             Rectangle(hdc, rectX, rectY, rectX + rectWidth, rectY + rectHeight);
         }
+
+        // text
+        char* text = "words";
+        short posTextX = 10, posTextY = 10;
+        
+        //text coulr
+        SetTextColor(hdc, RGB(255,255,255));
+        SetBkColor(hdc, RGB(0,0,0));
+        
+        // draw text
+        TextOut(hdc, posTextX, posTextY, text, strlen(text));
+
         
         EndPaint(hwnd, &ps);
     }
