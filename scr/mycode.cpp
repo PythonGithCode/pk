@@ -84,6 +84,8 @@ int rectWidth = 150;
 int rectHeight = 150;
 int moveSpeed = 5; // Movement speed
 int rectY = 50;
+int windowWidth;
+int windowHeight;
 double d_rectY = rectY;
 
 
@@ -133,8 +135,8 @@ void ShowGraphics() {
     RECT windowRect;
     GetClientRect(hwnd, &windowRect);
     
-    int windowWidth = windowRect.right - windowRect.left;
-    int windowHeight = windowRect.bottom - windowRect.top;
+    windowWidth = windowRect.right - windowRect.left;
+    windowHeight = windowRect.bottom - windowRect.top;
 
 
     if (hwnd == NULL) {
@@ -247,7 +249,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         if (isGravity) {
             timeFalling++;
             d_rectY += 1.05 * ( timeFalling * timeFalling );
-            rectY = round(d_rectY);
+            rectY = (int) round(d_rectY);
 
             // IS it at the bottom
             if ( rectY > windowHeight ) {
