@@ -161,6 +161,15 @@ void ShowGraphics() {
 
 // Handle the window messages, including keyboard input
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    if (!declareds) {
+        RECT windowRect;
+        GetClientRect(hwnd, &windowRect);
+        
+        int windowWidth = windowRect.right - windowRect.left;
+        int windowHeight = windowRect.bottom - windowRect.top;
+        declareds = true;
+    }
+    
     switch (uMsg) {
     case WM_PAINT: {
         PAINTSTRUCT ps;
@@ -183,10 +192,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     case WM_KEYDOWN: {
         // Handle movement based on WASD keys
         bool redraw = false;
-        if (!declareds) {
-            int windowWidth = windowRect.right - windowRect.left;
-            int windowHeight = windowRect.bottom - windowRect.top;
-        }
+        
 
         if (GetAsyncKeyState('W') & 0x8000) { // Move up
             rectY -= moveSpeed;
