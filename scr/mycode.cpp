@@ -144,12 +144,12 @@ void ShowGraphics() {
 
 
     
-    RECT windowRect;
-    GetClientRect(hwnd, &windowRect);
+    // RECT windowRect;
+    // GetClientRect(hwnd, &windowRect);
     
-    int windowWidth = windowRect.right - windowRect.left;
-    int windowHeight = windowRect.bottom - windowRect.top;
-    declareds = true;
+    // int windowWidth = windowRect.right - windowRect.left;
+    // int windowHeight = windowRect.bottom - windowRect.top;
+    // declareds = true;
 
     // Main message loop
     MSG msg;
@@ -185,14 +185,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     case WM_KEYDOWN: {
         // Handle movement based on WASD keys
         bool redraw = false;
-        if (!declareds) {
-            RECT windowRect;
-            GetClientRect(hwnd, &windowRect);
-            
-            int windowWidth = windowRect.right - windowRect.left;
-            int windowHeight = windowRect.bottom - windowRect.top;
-            declareds = true;
-        }
         
 
         if (GetAsyncKeyState('W') & 0x8000) { // Move up
@@ -240,10 +232,21 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             rectY = 50;
             d_rectY = rectY;
 
+
             
-            // GetClientRect(hwnd, &windowRect);
-            windowWidth  = windowRect.right  - windowRect.left;
-            windowHeight = windowRect.bottom - windowRect.top;
+            if (!declareds) {
+                RECT windowRect;
+                GetClientRect(hwnd, &windowRect);
+                int windowWidth = windowRect.right - windowRect.left;
+                int windowHeight = windowRect.bottom - windowRect.top;   
+            } else {
+                windowWidth = windowRect.right - windowRect.left;
+                windowHeight = windowRect.bottom - windowRect.top;   
+            }
+            
+            // // GetClientRect(hwnd, &windowRect);
+            // windowWidth  = windowRect.right  - windowRect.left;
+            // windowHeight = windowRect.bottom - windowRect.top;
             
             redraw = true;
         }
