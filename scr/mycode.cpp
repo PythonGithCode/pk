@@ -77,8 +77,11 @@ bool isGravity = false;
 bool isJump = false;
 short typeOfShape = 0;
 short timeFalling = 0;
-int rectX = 50, rectY = 50, rectWidth = 150, rectHeight = 150;
+int rectX = 50;
+int rectWidth = 150;
+int rectHeight = 150;
 int moveSpeed = 5; // Movement speed
+double rectY = 50;
 
 RECT windowRect;
 GetClientRect(hwnd, &windowRect);
@@ -214,7 +217,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             rectX = 50;
             rectY = 50;
             
-            GetClientRect(hwnd, &windowRect);
+            // GetClientRect(hwnd, &windowRect);
             windowWidth  = windowRect.right  - windowRect.left;
             windowHeight = windowRect.bottom - windowRect.top;
             
@@ -241,7 +244,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
             // IS it at the bottom
             if ( rectY > windowHeight ) {
-                rectY = windowheight;
+                rectY = windowHeight;
                 timeFalling = 0;
                 
             }
