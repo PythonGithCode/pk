@@ -263,7 +263,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         if (GetAsyncKeyState('C') & 0x8000) { // Is gravity
             isJump = true;
             timeFalling = 0;
-            rectY -= 5 * moveSpeed;
+            rectY -= 30 * moveSpeed;
             // redraw = true;
         }
 
@@ -271,7 +271,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         // Gravity
         if (isGravity) {
             timeFalling++;
-            d_rectY += 0.15 * ( timeFalling * timeFalling );
+            d_rectY += 0.075 * ( timeFalling * timeFalling );
             rectY = (int) round(d_rectY);
 
             RECT windowRect;
@@ -280,12 +280,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             // int windowWidth = windowRect.right - windowRect.left;
             
             // IS it at the bottom
-            if ( rectY > ( windowHeight - rectHeight ) ) { // offset
-                rectY = windowHeight;
+            if ( rectY + 5 > ( windowHeight - rectHeight ) ) { // offset
+                rectY = windowHeight - rectHeight; // offset
                 timeFalling = 0;
-                
+                isJump = false;
             }
-            // redraw = true;
+            // redraw = true;+
         }
         
         // Redraw the window if any key was pressed
