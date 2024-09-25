@@ -75,6 +75,7 @@ extern "C" __declspec(dllexport) void CALLBACK launchExe(HWND hwnd, HINSTANCE hi
 
 
 // Global variables for rectangle position
+bool constGravity = false;
 bool isGravity = false;
 bool isJump = false;
 
@@ -235,6 +236,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             rectX = 50;
             rectY = 50;
             d_rectY = rectY;
+            constGravity = false;
             
             // redraw = true;
         }
@@ -243,17 +245,22 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             isGravity = !isGravity;
             // redraw = true;
         }
+
+        if (GetAsyncKeyState('V') & 0x8000) { // Is gravity const
+            constGravity = !constGravity;
+            // redraw = true;
+        }
         
         if (GetAsyncKeyState('C') & 0x8000) { // Is gravity
             isJump = true;
             timeFalling = 0;
-            rectY -= 30 * moveSpeed;
+            rectY -= 7 * moveSpeed;
             // redraw = true;
         }
 
 
         // Gravity
-        if (isGravity) {
+        if (isGravity & !constGravity) {
             timeFalling++;
             d_rectY = rectY; // this might work
             d_rectY += 0.075 * ( timeFalling * timeFalling );
@@ -283,6 +290,25 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         return 0;
 
     default:
+        if (isGravity & constGravity) {
+            timeFalling++;
+            d_rectY = rectY; // this might work
+            d_rectY += 0.075 * ( timeFalling * timeFalling );
+            rectY = (int) round(d_rectY);
+
+            RECT windowRect;
+            GetClientRect(hwnd, &windowRect);
+            int windowHeight = windowRect.bottom - windowRect.top;   
+            // int windowWidth = windowRect.right - windowRect.left;
+            
+            // IS it at the bottom
+            if ( rectY + 5 > ( windowHeight - rectHeight ) ) { // offset
+                rectY = windowHeight - rectHeight; // offset
+                timeFalling = 0;
+                isJump = false;
+            }
+            // redraw = true;+
+        }
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
 }
