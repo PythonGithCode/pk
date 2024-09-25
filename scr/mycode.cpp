@@ -307,6 +307,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 timeFalling = 0;
                 isJump = false;
             }
+            // Redraw the window if any key was pressed
+            InvalidateRect(hwnd, NULL, TRUE);
             // redraw = true;+
         }
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
