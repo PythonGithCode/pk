@@ -293,7 +293,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         if (isGravity & constGravity) {
             timeFalling++;
             d_rectY = rectY; // this might work
-            d_rectY += 0.075 * ( timeFalling * timeFalling );
+            d_rectY += (0.00075) * ( timeFalling * timeFalling );
             rectY = (int) round(d_rectY);
 
             RECT windowRect;
