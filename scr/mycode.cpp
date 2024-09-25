@@ -235,22 +235,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             rectX = 50;
             rectY = 50;
             d_rectY = rectY;
-
-
-            
-            // if (!declareds) {
-            // RECT windowRect;
-            // GetClientRect(hwnd, &windowRect);
-            // int windowWidth = windowRect.right - windowRect.left;
-            // int windowHeight = windowRect.bottom - windowRect.top;   
-            // } else {
-            //     windowWidth = windowRect.right - windowRect.left;
-            //     windowHeight = windowRect.bottom - windowRect.top;   
-            // }
-            
-            // // GetClientRect(hwnd, &windowRect);
-            // windowWidth  = windowRect.right  - windowRect.left;
-            // windowHeight = windowRect.bottom - windowRect.top;
             
             // redraw = true;
         }
@@ -271,6 +255,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         // Gravity
         if (isGravity) {
             timeFalling++;
+            d_rectY = rectY; // this might work
             d_rectY += 0.075 * ( timeFalling * timeFalling );
             rectY = (int) round(d_rectY);
 
