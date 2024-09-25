@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <string>
 #include <math.h> 
+#include <stdio.h>
 
 using namespace std;
 
@@ -10,6 +11,14 @@ using namespace std;
 #else
 #define EXPORT_SYMBOL
 #endif
+
+LARGE_INTEGER frequency;
+LARGE_INTEGER lastTime;
+int frameCount = 0;
+float fps = 0.0f;
+
+QueryPerformanceFrequency(&frequency);
+QueryPerformanceCounter(&lastTime);
 
 bool declareds = false;
 
@@ -169,6 +178,27 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
 
+        LARGE_INTEGER currentTime;
+        QueryPerformanceCounter(&currentTime);
+
+        // Calculate time difference (in seconds)
+        double deltaTime = (double)(currentTime.QuadPart - lastTime.QuadPart) / frequency.QuadPart;
+    
+        // Increment frame count
+        frameCount++;
+    
+        // If one second has passed, calculate FPS
+        if (deltaTime >= 1.0) {
+            fps = frameCount / deltaTime; // Frames per second
+            frameCount = 0;               // Reset frame count
+            lastTime = currentTime;       // Reset timer
+        }
+    
+        // Display FPS as text in the window
+        char fpsText[64];
+        sprintf(fpsText, "FPS: %.2f", fps);
+
+
         // draw shapes
         if ( typeOfShape == 0 ) {
             // Draw the rectangle at the current position
@@ -181,14 +211,15 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
         // text
         char* text = "words";
-        short posTextX = 10, posTextY = 10;
+        short posTextX = 10, posTextY = 30;
         
         //text coulr
         SetTextColor(hdc, RGB(255,255,255));
         SetBkColor(hdc, RGB(0,0,0));
         
         // draw text
-        TextOut(hdc, posTextX, posTextY, text, strlen(text));
+        // TextOut(hdc, posTextX, posTextY, text, strlen(text));
+        TextOut(hdc, posTextX, posTextY, fpsText, strlen(fpsText));
 
         
         EndPaint(hwnd, &ps);
