@@ -234,15 +234,15 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
 
             
-            if (!declareds) {
-                RECT windowRect;
-                GetClientRect(hwnd, &windowRect);
-                int windowWidth = windowRect.right - windowRect.left;
-                int windowHeight = windowRect.bottom - windowRect.top;   
-            } else {
-                windowWidth = windowRect.right - windowRect.left;
-                windowHeight = windowRect.bottom - windowRect.top;   
-            }
+            // if (!declareds) {
+            RECT windowRect;
+            GetClientRect(hwnd, &windowRect);
+            int windowWidth = windowRect.right - windowRect.left;
+            int windowHeight = windowRect.bottom - windowRect.top;   
+            // } else {
+            //     windowWidth = windowRect.right - windowRect.left;
+            //     windowHeight = windowRect.bottom - windowRect.top;   
+            // }
             
             // // GetClientRect(hwnd, &windowRect);
             // windowWidth  = windowRect.right  - windowRect.left;
