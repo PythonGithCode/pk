@@ -80,6 +80,12 @@ short timeFalling = 0;
 int rectX = 50, rectY = 50, rectWidth = 150, rectHeight = 150;
 int moveSpeed = 5; // Movement speed
 
+RECT windowRect;
+GetClientRect(hwnd, &windowRect);
+
+int windowWidth = windowRect.right - windowRect.left;
+int windowHeight = windowRect.bottom - windowRect.top;
+
 
 HINSTANCE hInst; // Current instance
 
@@ -208,6 +214,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             rectX = 50;
             rectY = 50;
             
+            GetClientRect(hwnd, &windowRect);
+            windowWidth  = windowRect.right  - windowRect.left;
+            windowHeight = windowRect.bottom - windowRect.top;
+            
             redraw = true;
         }
         
@@ -219,7 +229,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         if (GetAsyncKeyState('C') & 0x8000) { // Is gravity
             isJump = true;
             timeFalling = 0;
-            rectY += 5 * moveSpeed;
+            rectY -= 5 * moveSpeed;
             redraw = true;
         }
 
@@ -227,7 +237,14 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         // Gravity
         if (isGravity) {
             timeFalling++;
-            rectY += -1.05 * ( timeFalling * timeFalling );
+            rectY += 1.05 * ( timeFalling * timeFalling );
+
+            // IS it at the bottom
+            if ( rectY > windowHeight ) {
+                rectY = windowheight;
+                timeFalling = 0;
+                
+            }
             redraw = true;
         }
         
