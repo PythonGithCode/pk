@@ -187,7 +187,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         bool redraw = false;
         RECT windowRect;
         GetClientRect(hwnd, &windowRect);
-        int windowWidth = windowRect.right - windowRect.left;
+        int windowHeight = windowRect.bottom - windowRect.top;   
+        // int windowWidth = windowRect.right - windowRect.left;
         
 
         if (GetAsyncKeyState('W') & 0x8000) { // Move up
@@ -273,11 +274,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             d_rectY += 1.05 * ( timeFalling * timeFalling );
             rectY = (int) round(d_rectY);
 
+            RECT windowRect;
+            GetClientRect(hwnd, &windowRect);
+            int windowHeight = windowRect.bottom - windowRect.top;   
+            // int windowWidth = windowRect.right - windowRect.left;
             // IS it at the bottom
             if ( rectY > windowHeight ) {
-                RECT windowRect;
-                GetClientRect(hwnd, &windowRect);
-                int windowWidth = windowRect.right - windowRect.left;
                 rectY = windowHeight;
                 timeFalling = 0;
                 
