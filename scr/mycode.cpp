@@ -1,4 +1,4 @@
-#include <iostream>
+// #include <iostream>
 #include <windows.h>
 #include <string>
 #include <math.h> 
@@ -17,8 +17,8 @@ LARGE_INTEGER lastTime;
 int frameCount = 0;
 double fps = 0;
 
-QueryPerformanceFrequency(&frequency);
-QueryPerformanceCounter(&lastTime);
+::QueryPerformanceFrequency(&frequency);
+::QueryPerformanceCounter(&lastTime);
 
 bool declareds = false;
 
