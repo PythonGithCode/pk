@@ -1,8 +1,10 @@
-// #include <iostream>
-#include <windows.h>
+#include <ctime>
+#include <iostream>
 #include <string>
+
 #include <math.h> 
-// #include <stdio.h>
+#include <stdio.h>
+#include <windows.h>
 
 using namespace std;
 
@@ -12,15 +14,20 @@ using namespace std;
 #define EXPORT_SYMBOL
 #endif
 
-LARGE_INTEGER frequency;
-LARGE_INTEGER lastTime;
-int frameCount = 0;
-double fps = 0;
-
-::QueryPerformanceFrequency(&frequency);
-::QueryPerformanceCounter(&lastTime);
+// LARGE_INTEGER frequency;
+// LARGE_INTEGER lastTime;
 
 bool declareds = false;
+int frameCount = 0;
+
+const time_t current_time = time(NULL);
+
+
+double fps = 0;
+
+// ::QueryPerformanceFrequency(&frequency);
+// ::QueryPerformanceCounter(&lastTime);
+
 
 // A simple function to export
 extern "C" EXPORT_SYMBOL void hello() {
@@ -90,11 +97,12 @@ bool isJump = false;
 
 short typeOfShape = 0;
 short timeFalling = 0;
+
+int moveSpeed = 5; // Movement speed
 int rectX = 50;
+int rectY = 50;
 int rectWidth = 150;
 int rectHeight = 150;
-int moveSpeed = 5; // Movement speed
-int rectY = 50;
 // int windowWidth;
 // int windowHeight;
 double d_rectY = rectY;
@@ -178,24 +186,28 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
 
-        LARGE_INTEGER currentTime;
-        QueryPerformanceCounter(&currentTime);
+        // LARGE_INTEGER currentTime;
+        // QueryPerformanceCounter(&currentTime);
+        frameCount++;
+        time_t timeNow = time(NULL);
 
         // Calculate time difference (in seconds)
-        double deltaTime = (double)(currentTime.QuadPart - lastTime.QuadPart) / frequency.QuadPart;
+        // double deltaTime = (double)(currentTime.QuadPart - lastTime.QuadPart) / frequency.QuadPart;
     
         // Increment frame count
-        frameCount++;
     
         // If one second has passed, calculate FPS
-        if (deltaTime >= 1.0) {
-            fps = frameCount / deltaTime; // Frames per second
-            frameCount = 0;               // Reset frame count
-            lastTime = currentTime;       // Reset timer
-        }
+        // if (deltaTime >= 1.0) {
+        //     fps = frameCount / deltaTime; // Frames per second
+        //     frameCount = 0;               // Reset frame count
+        //     lastTime = currentTime;       // Reset timer
+        // }
     
         // Display FPS as text in the window
+        fps = frameCount / (timeNow - current_time);
+        
         char fpsText[64];
+        
         sprintf(fpsText, "FPS: %.2f", fps);
 
 
