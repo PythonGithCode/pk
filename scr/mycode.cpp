@@ -1,4 +1,4 @@
-#include <ctime>
+// #include <ctime>
 #include <iostream>
 #include <string>
 
@@ -18,15 +18,25 @@ using namespace std;
 // LARGE_INTEGER lastTime;
 
 bool declareds = false;
-int frameCount = 0;
+// int frameCount = 0;
 
-const time_t current_time = time(NULL);
+// const time_t current_time = time(NULL);
 
 
-double fps = 0;
+// double fps = 0;
 
 // ::QueryPerformanceFrequency(&frequency);
 // ::QueryPerformanceCounter(&lastTime);
+
+LARGE_INTEGER frequency;       // Holds ticks per second
+LARGE_INTEGER startTime;       // Start time of the current frame
+LARGE_INTEGER endTime;         // End time of the current frame
+int frameCount = 0;            // Number of frames counted in the current second
+float fps = 0.0f;              // FPS value to display
+float elapsedTime = 0.0f;      // Elapsed time for current frame
+float fpsUpdateInterval = 1.0f;// Interval to update the FPS display (1 second)
+
+
 
 
 // A simple function to export
@@ -171,9 +181,28 @@ void ShowGraphics() {
 
     // Main message loop
     MSG msg;
-    while (GetMessage(&msg, NULL, 0, 0)) {
+    while (GetMessage(&msg, nullptr, 0, 0)) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
+    
+        // Get the current time
+        QueryPerformanceCounter(&endTime);
+    
+        // Calculate the elapsed time in seconds
+        elapsedTime = static_cast<float>(endTime.QuadPart - startTime.QuadPart) / frequency.QuadPart;
+    
+        // Increment frame count
+        frameCount++;
+    
+        // If one second has passed, calculate the FPS
+        if (elapsedTime >= fpsUpdateInterval) {
+            fps = frameCount / elapsedTime;  // Frames per second
+            frameCount = 0;                  // Reset frame count
+            QueryPerformanceCounter(&startTime);  // Reset start time
+        }
+    
+        // Use the fps value for display
+        // You can display the fps in your WM_PAINT section using TextOut function
     }
 }
 
@@ -186,29 +215,14 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
 
-        // LARGE_INTEGER currentTime;
-        // QueryPerformanceCounter(&currentTime);
-        frameCount++;
-        time_t timeNow = time(NULL);
-
-        // Calculate time difference (in seconds)
-        // double deltaTime = (double)(currentTime.QuadPart - lastTime.QuadPart) / frequency.QuadPart;
     
-        // Increment frame count
-    
-        // If one second has passed, calculate FPS
-        // if (deltaTime >= 1.0) {
-        //     fps = frameCount / deltaTime; // Frames per second
-        //     frameCount = 0;               // Reset frame count
-        //     lastTime = currentTime;       // Reset timer
-        // }
     
         // Display FPS as text in the window
-        fps = frameCount / (timeNow - current_time);
+        // fps = frameCount / (timeNow - current_time);
         
-        char fpsText[64];
+        // char fpsText[64];
         
-        sprintf(fpsText, "FPS: %.2f", fps);
+        // sprintf(fpsText, "FPS: %.2f", fps);
 
 
         // draw shapes
@@ -225,13 +239,19 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         // char* text = "words";
         short posTextX = 10, posTextY = 30;
         
+        char fpsText[64];
+        
         //text coulr
         SetTextColor(hdc, RGB(255,255,255));
         SetBkColor(hdc, RGB(0,0,0));
         
         // draw text
         // TextOut(hdc, posTextX, posTextY, text, strlen(text));
-        TextOut(hdc, posTextX, posTextY, fpsText, strlen(fpsText));
+        // TextOut(hdc, posTextX, posTextY, fpsText, strlen(fpsText));
+        // Draw FPS
+        sprintf(fpsText, "FPS: %.2f", fps);  // Convert fps to string
+        TextOut(hdc, 10, 30, fpsText, strlen(fpsText));
+
 
         
         EndPaint(hwnd, &ps);
@@ -339,6 +359,14 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         InvalidateRect(hwnd, NULL, TRUE);
     }
     return 0;
+
+    case WM_CREATE:
+        QueryPerformanceFrequency(&frequency);
+
+        // Get the starting time
+        QueryPerformanceCounter(&startTime);
+
+        return 0;
 
     case WM_DESTROY:
         PostQuitMessage(0);
