@@ -38,6 +38,7 @@ bool declareds = false;
 std::atomic<bool> runConsole2(true); // Control flag to stop console thread
 std::atomic<int> rectX2(100);    // X position of the rectangle
 std::atomic<int> rectY2(100);    // Y position of the rectangle
+std::atomic<int> moveSpeed2(5);    // Y position of the rectangle
 
 std::mutex logMutex2; // To synchronize logging
 
@@ -80,6 +81,50 @@ extern "C" __declspec(dllexport) LRESULT CALLBACK WindowProc2(HWND hwnd2, UINT u
             EndPaint(hwnd2, &ps2);
             return 0;
         }
+        case WM_KEYDOWN: {
+            // Handle movement based on WASD keys
+
+            if (GetAsyncKeyState('W') & 0x8000) { // Move up
+                rectY2.store(rectY2.load() - moveSpeed2.load());
+                // redraw = true;
+            }
+            if (GetAsyncKeyState('S') & 0x8000) { // Move down
+                rectY2.store(rectY2.load() + moveSpeed2.load());
+                // redraw = true;
+            }
+            if (GetAsyncKeyState('A') & 0x8000) { // Move left
+                rectX2.store( rectX2.load() - moveSpeed2.load() );
+                // redraw = true;
+            }
+            if (GetAsyncKeyState('D') & 0x8000) { // Move right
+                rectX2.store(rectX2.load() + moveSpeed2.load());
+                // redraw = true;
+            }
+
+            if (GetAsyncKeyState('J') & 0x8000) { // More speed
+                moveSpeed2.store(moveSpeed2.load() + 1);
+                // redraw = true;
+            }
+            if (GetAsyncKeyState('K') & 0x8000) { // Less speed
+                moveSpeed2.store(moveSpeed2.load() - 1);
+                // redraw = true;
+            }
+
+            if (GetAsyncKeyState('L') & 0x8000) { // start over stuff
+                moveSpeed2.store(5); // Movement speed
+                rectX2.store(50);
+                rectY2.store(50);
+                
+                // redraw = true;
+            }
+            
+            // Redraw the window if any key was pressed
+            InvalidateRect(hwnd2, NULL, TRUE);
+
+            return 0;
+        }
+        
+
         case WM_DESTROY: {
             runConsole2 = false; // Signal console thread to stop
             PostQuitMessage(0);
