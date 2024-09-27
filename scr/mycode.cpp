@@ -96,7 +96,7 @@ extern "C" __declspec(dllexport) int WINAPI WinMain2(HINSTANCE hInstance2, HINST
     freopen("CONIN$", "r", stdin);
 
     // Create and run the console thread
-    std::thread consoleThread(ConsoleThread2);
+    std::thread consoleThread2(ConsoleThread2);
 
     // Initialize and create a window
     WNDCLASS wc2 = { };
