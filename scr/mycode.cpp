@@ -177,7 +177,7 @@ HWND g_textBox;     // Handle for the text box
 HWND g_staticText;  // Handle for the static text
 
 // Forward declaration of window procedure
-extern "C" __declspec(dllexport) LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+extern "C" __declspec(dllexport) LRESULT CALLBACK WindowProc3(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 // Function to update the static text label
 extern "C" __declspec(dllexport) void UpdateStaticText() {
@@ -199,7 +199,7 @@ extern "C" __declspec(dllexport) void UpdateVariableFromTextBox() {
 }
 
 // Entry point of the Windows application
-extern "C" __declspec(dllexport) int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow) {
+extern "C" __declspec(dllexport) int WINAPI WinMain3(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow) {
     // Allocate console window for logging
     AllocConsole();
     freopen("CONOUT$", "w", stdout);
@@ -209,7 +209,7 @@ extern "C" __declspec(dllexport) int WINAPI WinMain(HINSTANCE hInstance, HINSTAN
     const char* CLASS_NAME = "Sample Window Class";
 
     WNDCLASS wc = {};
-    wc.lpfnWndProc = WindowProc;
+    wc.lpfnWndProc = WindowProc3;
     wc.hInstance = hInstance;
     wc.lpszClassName = CLASS_NAME;
 
@@ -246,7 +246,7 @@ extern "C" __declspec(dllexport) int WINAPI WinMain(HINSTANCE hInstance, HINSTAN
 }
 
 // Window procedure to handle window messages
-extern "C" __declspec(dllexport) LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+extern "C" __declspec(dllexport) LRESULT CALLBACK WindowProc3(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
         case WM_CREATE:
             // Create a button
