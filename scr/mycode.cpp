@@ -1,6 +1,9 @@
 // #include <ctime>
+#include <atomic>
 #include <iostream>
+#include <thread>
 #include <string>
+#include <mutex>
 
 #include <math.h> 
 #include <stdio.h>
@@ -27,6 +30,103 @@ bool declareds = false;
 
 // ::QueryPerformanceFrequency(&frequency);
 // ::QueryPerformanceCounter(&lastTime);
+
+
+
+
+// Global variables for shared state
+std::atomic<bool> runConsole2(true); // Control flag to stop console thread
+std::atomic<int> rectX2(100);    // X position of the rectangle
+std::atomic<int> rectY2(100);    // Y position of the rectangle
+
+std::mutex logMutex2; // To synchronize logging
+
+// Console thread function
+extern "C" __declspec(dllexport) void ConsoleThread2() {
+    std::string input2;
+    while (runConsole2) {
+        // Log to console
+        {
+            std::lock_guard<std::mutex> lock(logMutex2);
+            std::cout << "Enter new position for the shape (x y): ";
+        }
+
+        // Get user input (new position)
+        int newX2, newY2;
+        std::cin >> newX2 >> newY2;
+
+        // Update shared variables
+        rectX2.store(newX2);
+        rectY2.store(newY2);
+
+        // Log the updated position
+        {
+            std::lock_guard<std::mutex> lock(logMutex2);
+            std::cout << "Updated position to: (" << newX2 << ", " << newY2 << ")\n";
+        }
+    }
+}
+
+// Windows Procedure function
+extern "C" __declspec(dllexport) LRESULT CALLBACK WindowProc2(HWND hwnd2, UINT uMsg2, WPARAM wParam2, LPARAM lParam2) {
+    switch (uMsg2) {
+        case WM_PAINT: {
+            PAINTSTRUCT ps2;
+            HDC hdc2 = BeginPaint(hwnd2, &ps2);
+
+            // Draw a rectangle using the updated values from the console
+            Rectangle(hdc2, rectX2.load(), rectY2.load(), rectX2.load() + 100, rectY2.load() + 100);
+
+            EndPaint(hwnd2, &ps2);
+            return 0;
+        }
+        case WM_DESTROY: {
+            runConsole2 = false; // Signal console thread to stop
+            PostQuitMessage(0);
+            return 0;
+        }
+    }
+    return DefWindowProc(hwnd2, uMsg2, wParam2, lParam2);
+}
+
+extern "C" __declspec(dllexport) int WINAPI WinMain2(HINSTANCE hInstance2, HINSTANCE hPrevInstance2, PSTR lpCmdLine2, int nCmdShow2) {
+    // Create the console window
+    AllocConsole();
+    freopen("CONOUT$", "w", stdout);
+    freopen("CONIN$", "r", stdin);
+
+    // Create and run the console thread
+    std::thread consoleThread(ConsoleThread2);
+
+    // Initialize and create a window
+    WNDCLASS wc2 = { };
+    wc2.lpfnWndProc = WindowProc2;
+    wc2.hInstance = hInstance2;
+    wc2.lpszClassName = "GraphicsWindowClass";
+    RegisterClass(&wc2);
+
+    HWND hwnd2 = CreateWindowEx(0, "GraphicsWindowClass", "Graphics Window", WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, nullptr, nullptr, hInstance2, nullptr);
+
+    if (hwnd2 == nullptr) return 0;
+
+    ShowWindow(hwnd2, nCmdShow2);
+
+    // Main message loop
+    MSG msg2 = { };
+    while (GetMessage(&msg2, nullptr, 0, 0)) {
+        TranslateMessage(&msg2);
+        DispatchMessage(&msg2);
+    }
+
+    // Clean up
+    runConsole2 = false;
+    consoleThread2.join();
+
+    return 0;
+}
+
+
 
 LARGE_INTEGER frequency;       // Holds ticks per second
 LARGE_INTEGER startTime;       // Start time of the current frame
@@ -122,11 +222,11 @@ double d_rectY = rectY;
 HINSTANCE hInst; // Current instance
 
 // Function declarations
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-void ShowGraphics();
+extern "C" __declspec(dllexport) LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+extern "C" __declspec(dllexport) void ShowGraphics();
 
 // Entry point for the DLL
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
+extern "C" __declspec(dllexport) BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
     if (fdwReason == DLL_PROCESS_ATTACH) {
         hInst = hinstDLL; // Save instance handle
     }
@@ -138,7 +238,7 @@ extern "C" __declspec(dllexport) void ShowGraphicsDLL() {
     ShowGraphics(); // Create a window and draw
 }
 
-void ShowGraphics() {
+extern "C" __declspec(dllexport) void ShowGraphics() {
     // Register the window class
     const char CLASS_NAME[] = "Sample Window Class";
 
@@ -207,7 +307,7 @@ void ShowGraphics() {
 }
 
 // Handle the window messages, including keyboard input
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+extern "C" __declspec(dllexport) LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     
     
     switch (uMsg) {
