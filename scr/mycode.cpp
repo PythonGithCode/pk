@@ -123,8 +123,6 @@ extern "C" __declspec(dllexport) LRESULT CALLBACK WindowProc2(HWND hwnd2, UINT u
 
             return 0;
         }
-        
-
         case WM_DESTROY: {
             runConsole2 = false; // Signal console thread to stop
             PostQuitMessage(0);
@@ -170,6 +168,132 @@ extern "C" __declspec(dllexport) int WINAPI WinMain2(HINSTANCE hInstance2, HINST
 
     return 0;
 }
+
+
+
+// Global variables
+int g_variable = 42;
+HWND g_textBox;     // Handle for the text box
+HWND g_staticText;  // Handle for the static text
+
+// Forward declaration of window procedure
+extern "C" __declspec(dllexport) LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+// Function to update the static text label
+extern "C" __declspec(dllexport) void UpdateStaticText() {
+    std::string text = "Current Value: " + std::to_string(g_variable);
+    SetWindowText(g_staticText, text.c_str());
+}
+
+// Function that handles the button click and logs to the console
+extern "C" __declspec(dllexport) void LogToConsole() {
+    std::cout << "Button Clicked! Current value of g_variable: " << g_variable << std::endl;
+}
+
+// Function to handle text input and update the variable
+extern "C" __declspec(dllexport) void UpdateVariableFromTextBox() {
+    char buffer[256];
+    GetWindowText(g_textBox, buffer, sizeof(buffer));
+    g_variable = atoi(buffer);  // Convert text to int
+    UpdateStaticText();
+}
+
+// Entry point of the Windows application
+extern "C" __declspec(dllexport) int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow) {
+    // Allocate console window for logging
+    AllocConsole();
+    freopen("CONOUT$", "w", stdout);
+    std::cout << "Console window initialized!" << std::endl;
+
+    // Register the window class
+    const char* CLASS_NAME = "Sample Window Class";
+
+    WNDCLASS wc = {};
+    wc.lpfnWndProc = WindowProc;
+    wc.hInstance = hInstance;
+    wc.lpszClassName = CLASS_NAME;
+
+    RegisterClass(&wc);
+
+    // Create the window
+    HWND hwnd = CreateWindowEx(
+        0,                              // Optional window styles
+        CLASS_NAME,                     // Window class
+        "GUI Window",                   // Window title
+        WS_OVERLAPPEDWINDOW,            // Window style
+        CW_USEDEFAULT, CW_USEDEFAULT,   // Window position
+        300, 200,                       // Window size
+        NULL,                           // Parent window
+        NULL,                           // Menu
+        hInstance,                      // Instance handle
+        NULL                            // Additional application data
+    );
+
+    if (hwnd == NULL) {
+        return 0;
+    }
+
+    ShowWindow(hwnd, nCmdShow);
+
+    // Run the message loop
+    MSG msg = {};
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return 0;
+}
+
+// Window procedure to handle window messages
+extern "C" __declspec(dllexport) LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    switch (uMsg) {
+        case WM_CREATE:
+            // Create a button
+            CreateWindow(
+                "BUTTON", "Log to Console",
+                WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+                50, 50, 150, 30, hwnd, (HMENU)1, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+
+            // Create a static text to display variable
+            g_staticText = CreateWindow(
+                "STATIC", "Current Value: 42",
+                WS_VISIBLE | WS_CHILD,
+                50, 100, 150, 30, hwnd, NULL, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+
+            // Create a text box for variable input
+            g_textBox = CreateWindow(
+                "EDIT", "42",
+                WS_VISIBLE | WS_CHILD | WS_BORDER | ES_NUMBER,
+                50, 150, 150, 20, hwnd, NULL, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+
+            break;
+
+        case WM_COMMAND:
+            if (LOWORD(wParam) == 1) {
+                // Button clicked: Log to the console
+                LogToConsole();
+            }
+            break;
+
+        case WM_KEYDOWN:
+            if (wParam == VK_RETURN) {
+                // Enter key pressed: Update variable from text box
+                UpdateVariableFromTextBox();
+            }
+            break;
+
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            return 0;
+
+        default:
+            return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
+
+    return 0;
+}
+
 
 
 
