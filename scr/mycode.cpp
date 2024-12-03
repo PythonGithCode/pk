@@ -43,20 +43,7 @@ std::atomic<int> moveSpeed2(5);    // Y position of the rectangle
 std::mutex logMutex2; // To synchronize logging
 
 
-#include <Python.h>
-// Exported function callable via rundll32.exe
-extern "C" __declspec(dllexport) void CALLBACK RunPythonScript(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow) {
-    Py_Initialize();
-    if (lpszCmdLine && strlen(lpszCmdLine) > 0) {
-        PyRun_SimpleString(lpszCmdLine);
-    }
-    else {
-        // Fallback: Default message
-        PyRun_SimpleString("print('Hello from Python!')");
-    }
-    // Finalize Python runtime
-    Py_Finalize();
-}
+
 
 // Console thread function
 extern "C" __declspec(dllexport) void ConsoleThread2() {
@@ -719,4 +706,19 @@ extern "C" __declspec(dllexport) void CALLBACK launchPotato(HWND hwnd, HINSTANCE
     FreeConsole();
 }
 
+
+#include <Python.h>
+// Exported function callable via rundll32.exe
+extern "C" __declspec(dllexport) void CALLBACK RunPythonScript(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow) {
+    Py_Initialize();
+    if (lpszCmdLine && strlen(lpszCmdLine) > 0) {
+        PyRun_SimpleString(lpszCmdLine);
+    }
+    else {
+        // Fallback: Default message
+        PyRun_SimpleString("print('Hello from Python!')");
+    }
+    // Finalize Python runtime
+    Py_Finalize();
+}
 
