@@ -44,8 +44,8 @@ std::mutex logMutex2; // To synchronize logging
 
 
 #include <Python.h>
-// Exported function callable via 
-rundll32.exe__declspec(dllexport) void CALLBACK RunPythonScript(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow) {
+// Exported function callable via rundll32.exe
+__declspec(dllexport) void CALLBACK RunPythonScript(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow) {
     // Initialize Python runtime
     Py_Initialize();
     // Run the Python script passed via lpszCmdLine
