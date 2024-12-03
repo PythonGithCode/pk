@@ -5,8 +5,9 @@ cmake_minimum_required(VERSION 3.15)
 # require c++ standerd
 set(CMAKE_CXX_STANDARD 11)
 
-set(Python3_INCLUDE_DIRS "D:/a/pk/pk/include")
-set(Python3_LIBRARIES "D:/a/pk/pk/libs/libpython3.11.dll.a")
+
+# set Python3_INCLUDE_DIRS "D:/a/pk/pk/include")
+# set Python3_LIBRARIES "D:/a/pk/pk/libs/libpython3.11.dll.a")
 
 # Locate Python
 find_package(Python3 REQUIRED COMPONENTS Development)
