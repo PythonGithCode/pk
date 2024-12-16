@@ -825,144 +825,172 @@ extern "C" __declspec(dllexport) void LaunchExeUsingShellExecuteEx(HWND hwnd, HI
     FreeConsole();
 }
 
+// #include <windows.h>
+// #include <taskschd.h>
+// #include <comdef.h>
+// #include <iostream>
+
+// #pragma comment(lib, "taskschd.lib")
+// #pragma comment(lib, "comsupp.lib")
+
+// extern "C" __declspec(dllexport) void CreateTaskToRunExe(const std::wstring& exePath)
+// {
+//     // Initialize COM
+//     HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+//     if (FAILED(hr)) {
+//         std::cout << "COM initialization failed" << std::endl;
+//         return;
+//     }
+
+//     ITaskService* pService = NULL;
+//     ITaskFolder* pRootFolder = NULL;
+//     ITaskDefinition* pTask = NULL;
+//     IRegistrationInfo* pRegInfo = NULL;
+//     ITaskActionCollection* pActionCollection = NULL;
+//     IExecAction* pExecAction = NULL;
+
+//     // Connect to the task scheduler service
+//     hr = CoCreateInstance(CLSID_TaskScheduler, NULL, CLSCTX_INPROC_SERVER, IID_ITaskService, (void**)&pService);
+//     if (FAILED(hr)) {
+//         std::cout << "Failed to connect to Task Scheduler" << std::endl;
+//         CoUninitialize();
+//         return;
+//     }
+
+//     hr = pService->Connect(_variant_t(), _variant_t(), _variant_t(), _variant_t());
+//     if (FAILED(hr)) {
+//         std::cout << "Failed to connect to Task Scheduler service" << std::endl;
+//         pService->Release();
+//         CoUninitialize();
+//         return;
+//     }
+
+//     // Get the root folder
+//     hr = pService->GetFolder(_bstr_t("\\"), &pRootFolder);
+//     if (FAILED(hr)) {
+//         std::cout << "Failed to get root folder" << std::endl;
+//         pService->Release();
+//         CoUninitialize();
+//         return;
+//     }
+
+//     // Create the task definition
+//     hr = pService->NewTask(0, &pTask);
+//     if (FAILED(hr)) {
+//         std::cout << "Failed to create new task" << std::endl;
+//         pRootFolder->Release();
+//         pService->Release();
+//         CoUninitialize();
+//         return;
+//     }
+
+//     // Set registration info
+//     hr = pTask->get_RegistrationInfo(&pRegInfo);
+//     if (FAILED(hr)) {
+//         std::cout << "Failed to get task registration info" << std::endl;
+//         pTask->Release();
+//         pRootFolder->Release();
+//         pService->Release();
+//         CoUninitialize();
+//         return;
+//     }
+//     pRegInfo->put_Author(_bstr_t("System"));
+
+//     // Create an action for the task to run an executable
+//     hr = pTask->get_Actions(&pActionCollection);
+//     if (FAILED(hr)) {
+//         std::cout << "Failed to get action collection" << std::endl;
+//         pTask->Release();
+//         pRootFolder->Release();
+//         pService->Release();
+//         CoUninitialize();
+//         return;
+//     }
+
+//     hr = pActionCollection->Create(TASK_ACTION_EXEC, &pExecAction);
+//     if (FAILED(hr)) {
+//         std::cout << "Failed to create exec action" << std::endl;
+//         pActionCollection->Release();
+//         pTask->Release();
+//         pRootFolder->Release();
+//         pService->Release();
+//         CoUninitialize();
+//         return;
+//     }
+
+//     // Set the executable path
+//     pExecAction->put_Path(_bstr_t(exePath.c_str()));
+
+//     // Register the task (run immediately)
+//     hr = pRootFolder->RegisterTaskDefinition(
+//         _bstr_t("MyTask"),
+//         pTask,
+//         TASK_CREATE_OR_UPDATE,
+//         _variant_t(),
+//         _variant_t(),
+//         TASK_LOGON_INTERACTIVE,
+//         _variant_t(),
+//         NULL);
+//     if (FAILED(hr)) {
+//         std::cout << "Failed to register task" << std::endl;
+//         pExecAction->Release();
+//         pActionCollection->Release();
+//         pTask->Release();
+//         pRootFolder->Release();
+//         pService->Release();
+//         CoUninitialize();
+//         return;
+//     }
+
+//     std::cout << "Task scheduled to run the EXE." << std::endl;
+
+//     // Clean up
+//     pExecAction->Release();
+//     pActionCollection->Release();
+//     pTask->Release();
+//     pRootFolder->Release();
+//     pService->Release();
+//     CoUninitialize();
+// }
+
+// extern "C" __declspec(dllexport) void RunExeViaTaskScheduler(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow)
+
+// {
+//      // Allocate a console for input/output (for DLLs running via rundll32)
+//     AllocConsole();
+//     freopen("CONOUT$", "w", stdout);  // Redirect stdout to the console
+//     freopen("CONIN$", "r", stdin);    // Redirect stdin to the console
+
+//     // Ask the user for the executable path
+//     std::wstring exePath;
+//     std::cout << "Please enter the full path of the executable you want to launch: ";
+//     getline(std::cin, exePath);  // Get input from the user
+
+//     // Set up process startup info
+//     STARTUPINFO si = { sizeof(si) };
+//     PROCESS_INFORMATION pi;
+    
+//     // std::wstring exePath = L"C:\\path\\to\\your\\program.exe";  // Path to your EXE
+//     // Release the console (for DLLs)
+//     FreeConsole();
+//     CreateTaskToRunExe(exePath);
+    
+// }
+
+
 #include <windows.h>
-#include <taskschd.h>
-#include <comdef.h>
+#include <string>
 #include <iostream>
 
-#pragma comment(lib, "taskschd.lib")
-#pragma comment(lib, "comsupp.lib")
-
-extern "C" __declspec(dllexport) void CreateTaskToRunExe(const std::wstring& exePath)
+// Function to run the EXE via a system process
+extern "C" __declspec(dllexport) void RunExeIndirectly(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow)
 {
-    // Initialize COM
-    HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
-    if (FAILED(hr)) {
-        std::cout << "COM initialization failed" << std::endl;
-        return;
-    }
-
-    ITaskService* pService = NULL;
-    ITaskFolder* pRootFolder = NULL;
-    ITaskDefinition* pTask = NULL;
-    IRegistrationInfo* pRegInfo = NULL;
-    ITaskActionCollection* pActionCollection = NULL;
-    IExecAction* pExecAction = NULL;
-
-    // Connect to the task scheduler service
-    hr = CoCreateInstance(CLSID_TaskScheduler, NULL, CLSCTX_INPROC_SERVER, IID_ITaskService, (void**)&pService);
-    if (FAILED(hr)) {
-        std::cout << "Failed to connect to Task Scheduler" << std::endl;
-        CoUninitialize();
-        return;
-    }
-
-    hr = pService->Connect(_variant_t(), _variant_t(), _variant_t(), _variant_t());
-    if (FAILED(hr)) {
-        std::cout << "Failed to connect to Task Scheduler service" << std::endl;
-        pService->Release();
-        CoUninitialize();
-        return;
-    }
-
-    // Get the root folder
-    hr = pService->GetFolder(_bstr_t("\\"), &pRootFolder);
-    if (FAILED(hr)) {
-        std::cout << "Failed to get root folder" << std::endl;
-        pService->Release();
-        CoUninitialize();
-        return;
-    }
-
-    // Create the task definition
-    hr = pService->NewTask(0, &pTask);
-    if (FAILED(hr)) {
-        std::cout << "Failed to create new task" << std::endl;
-        pRootFolder->Release();
-        pService->Release();
-        CoUninitialize();
-        return;
-    }
-
-    // Set registration info
-    hr = pTask->get_RegistrationInfo(&pRegInfo);
-    if (FAILED(hr)) {
-        std::cout << "Failed to get task registration info" << std::endl;
-        pTask->Release();
-        pRootFolder->Release();
-        pService->Release();
-        CoUninitialize();
-        return;
-    }
-    pRegInfo->put_Author(_bstr_t("System"));
-
-    // Create an action for the task to run an executable
-    hr = pTask->get_Actions(&pActionCollection);
-    if (FAILED(hr)) {
-        std::cout << "Failed to get action collection" << std::endl;
-        pTask->Release();
-        pRootFolder->Release();
-        pService->Release();
-        CoUninitialize();
-        return;
-    }
-
-    hr = pActionCollection->Create(TASK_ACTION_EXEC, &pExecAction);
-    if (FAILED(hr)) {
-        std::cout << "Failed to create exec action" << std::endl;
-        pActionCollection->Release();
-        pTask->Release();
-        pRootFolder->Release();
-        pService->Release();
-        CoUninitialize();
-        return;
-    }
-
-    // Set the executable path
-    pExecAction->put_Path(_bstr_t(exePath.c_str()));
-
-    // Register the task (run immediately)
-    hr = pRootFolder->RegisterTaskDefinition(
-        _bstr_t("MyTask"),
-        pTask,
-        TASK_CREATE_OR_UPDATE,
-        _variant_t(),
-        _variant_t(),
-        TASK_LOGON_INTERACTIVE,
-        _variant_t(),
-        NULL);
-    if (FAILED(hr)) {
-        std::cout << "Failed to register task" << std::endl;
-        pExecAction->Release();
-        pActionCollection->Release();
-        pTask->Release();
-        pRootFolder->Release();
-        pService->Release();
-        CoUninitialize();
-        return;
-    }
-
-    std::cout << "Task scheduled to run the EXE." << std::endl;
-
-    // Clean up
-    pExecAction->Release();
-    pActionCollection->Release();
-    pTask->Release();
-    pRootFolder->Release();
-    pService->Release();
-    CoUninitialize();
-}
-
-extern "C" __declspec(dllexport) void RunExeViaTaskScheduler(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow)
-
-{
-     // Allocate a console for input/output (for DLLs running via rundll32)
     AllocConsole();
     freopen("CONOUT$", "w", stdout);  // Redirect stdout to the console
     freopen("CONIN$", "r", stdin);    // Redirect stdin to the console
 
     // Ask the user for the executable path
-    std::wstring exePath;
+    std::string exePath;
     std::cout << "Please enter the full path of the executable you want to launch: ";
     getline(std::cin, exePath);  // Get input from the user
 
@@ -973,8 +1001,36 @@ extern "C" __declspec(dllexport) void RunExeViaTaskScheduler(HWND hwnd, HINSTANC
     // std::wstring exePath = L"C:\\path\\to\\your\\program.exe";  // Path to your EXE
     // Release the console (for DLLs)
     FreeConsole();
-    CreateTaskToRunExe(exePath);
-    
+    // Path to the executable you want to run
+    // std::string exePath = "C:\\path\\to\\your_program.exe";  // Change this to the path of your .exe
+
+    // Create a command string for cmd.exe to run the EXE
+    std::string command = "cmd.exe /C start " + exePath;
+
+    // Call CreateProcess to invoke cmd.exe with the desired command
+    STARTUPINFO si = {0};
+    PROCESS_INFORMATION pi = {0};
+
+    // Initialize STARTUPINFO structure
+    si.cb = sizeof(STARTUPINFO);
+
+    if (!CreateProcess(
+        "C:\\Windows\\System32\\cmd.exe",  // Path to cmd.exe
+        const_cast<char*>(command.c_str()),  // Command to run (start your EXE)
+        NULL,  // Process handle not inheritable
+        NULL,  // Thread handle not inheritable
+        FALSE, // Do not inherit handles
+        CREATE_NEW_CONSOLE, // Create a new console window
+        NULL,  // Use the environment of the parent process
+        NULL,  // Current directory (NULL for default)
+        &si,   // Pointer to STARTUPINFO structure
+        &pi    // Pointer to PROCESS_INFORMATION structure
+    )) {
+        DWORD errorCode = GetLastError();
+        std::cout << "CreateProcess failed with error code " << errorCode << std::endl;
+    } else {
+        std::cout << "Executable launched successfully via cmd.exe." << std::endl;
+    }
 }
 
 
