@@ -1057,7 +1057,7 @@ extern "C" __declspec(dllexport) void RunExeUsingShellExecute()
     // Release the console (for DLLs)
     
     // Path to the executable you want to run
-    const wchar_t* exePath = exePaths; // Update with your EXE path
+    // const wchar_t* exePath = exePaths; // Update with your EXE path
 
     SHELLEXECUTEINFO shExecInfo = {0};
     shExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
