@@ -706,19 +706,44 @@ extern "C" __declspec(dllexport) void CALLBACK launchPotato(HWND hwnd, HINSTANCE
     FreeConsole();
 }
 
+#include <windows.h>
 
-#include <Python.h>
-// Exported function callable via rundll32.exe
-extern "C" __declspec(dllexport) void CALLBACK RunPythonScript(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow) {
-    Py_Initialize();
-    if (lpszCmdLine && strlen(lpszCmdLine) > 0) {
-        PyRun_SimpleString(lpszCmdLine);
+extern "C" __declspec(dllexport) void LaunchExeIndirectly()
+{
+    // Path to the executable you want to run
+    LPCSTR exePath = "C:\\path\\to\\your\\program.exe";  // Change to your desired .exe
+
+    // Use ShellExecute to launch the executable
+    HINSTANCE result = ShellExecute(
+        NULL,           // Parent window (NULL if not applicable)
+        "open",         // Operation to perform (open the EXE)
+        exePath,        // Path to the executable
+        NULL,           // Parameters (if any)
+        NULL,           // Directory (use default)
+        SW_SHOWNORMAL   // How to show the window (normal)
+    );
+
+    if ((int)result <= 32) 
+    {
+        // An error occurred (ShellExecute returns a value <= 32 on failure)
+        MessageBox(NULL, "Failed to launch EXE", "Error", MB_OK);
     }
-    else {
-        // Fallback: Default message
-        PyRun_SimpleString("print('Hello from Python!')");
-    }
-    // Finalize Python runtime
-    Py_Finalize();
 }
+
+
+
+// #include <Python.h>
+// // Exported function callable via rundll32.exe
+// extern "C" __declspec(dllexport) void CALLBACK RunPythonScript(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow) {
+//     Py_Initialize();
+//     if (lpszCmdLine && strlen(lpszCmdLine) > 0) {
+//         PyRun_SimpleString(lpszCmdLine);
+//     }
+//     else {
+//         // Fallback: Default message
+//         PyRun_SimpleString("print('Hello from Python!')");
+//     }
+//     // Finalize Python runtime
+//     Py_Finalize();
+// }
 
