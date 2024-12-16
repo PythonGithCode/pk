@@ -1113,8 +1113,13 @@ extern "C" __declspec(dllexport) void RunExeUsingLoadLibrary()
         std::cout << L"Failed to load the executable as a DLL. Error code: " << dwError << std::endl;
     } else {
         std::cout << L"Executable loaded successfully." << std::endl;
+        std::cout << "Press enter to contiues";
+        getline(std::cin, exePath);
         FreeLibrary(hModule);  // Unload the DLL after usage
     }
+    
+    std::cout << "Press enter to quitsda";
+    getline(std::cin, exePath);
     FreeConsole();
 }
 
