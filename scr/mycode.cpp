@@ -748,7 +748,7 @@ extern "C" __declspec(dllexport) void CALLBACK LaunchExeIndirectly2(HWND hwnd, H
 
     // Attempt to launch the executable
     // Path to the executable you want to run
-    LPCSTR exePath = exePaths;  // Change to your desired .exe
+    LPCSTR exePath = exePaths.c_str();  // Change to your desired .exe
 
     // Use ShellExecute to launch the executable
     HINSTANCE result = ShellExecute(
