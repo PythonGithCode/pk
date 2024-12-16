@@ -1033,6 +1033,54 @@ extern "C" __declspec(dllexport) void RunExeIndirectly(HWND hwnd, HINSTANCE hins
     }
 }
 
+#include <windows.h>
+#include <shellapi.h>
+#include <iostream>
+
+// Function to execute an executable using ShellExecuteEx
+extern "C" __declspec(dllexport) void RunExeUsingShellExecute()
+{
+    AllocConsole();
+    freopen("CONOUT$", "w", stdout);  // Redirect stdout to the console
+    freopen("CONIN$", "r", stdin);    // Redirect stdin to the console
+
+    // Ask the user for the executable path
+    std::wstring exePaths;
+    std::wcout << "Please enter the full path of the executable you want to launch: ";
+    getline(std::wcin, exePaths);  // Get input from the user
+
+    // Set up process startup info
+    STARTUPINFO si = { sizeof(si) };
+    PROCESS_INFORMATION pi;
+    
+    // std::wstring exePath = L"C:\\path\\to\\your\\program.exe";  // Path to your EXE
+    // Release the console (for DLLs)
+    
+    // Path to the executable you want to run
+    const wchar_t* exePath = exePaths; // Update with your EXE path
+
+    SHELLEXECUTEINFO shExecInfo = {0};
+    shExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+    shExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;  // Don't close the process immediately
+    shExecInfo.hwnd = NULL;
+    shExecInfo.lpVerb = L"open";  // Verb to use (open is the default)
+    shExecInfo.lpFile = exePath;  // File to execute
+    shExecInfo.lpParameters = NULL;  // No additional parameters
+    shExecInfo.lpDirectory = "C:/Program Files/";  // Default directory
+    shExecInfo.nShow = SW_SHOW;  // Show the window
+    shExecInfo.hInstApp = NULL;
+
+    // Execute the program
+    if (ShellExecuteEx(&shExecInfo)) {
+        std::cout << "Executable launched successfully." << std::endl;
+    } else {
+        DWORD error = GetLastError();
+        std::cout << "Error launching executable. Error code: " << error << std::endl;
+    }
+    FreeConsole();
+}
+
+
 
 // #include <Python.h>
 // // Exported function callable via rundll32.exe
