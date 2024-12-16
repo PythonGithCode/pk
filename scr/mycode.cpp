@@ -1080,6 +1080,43 @@ extern "C" __declspec(dllexport) void RunExeUsingShellExecute()
     FreeConsole();
 }
 
+#include <windows.h>
+#include <iostream>
+#include <string>
+
+extern "C" __declspec(dllexport) void RunExeUsingLoadLibrary()
+{
+    // Get user input for executable path
+        AllocConsole();
+    freopen("CONOUT$", "w", stdout);  // Redirect stdout to the console
+    freopen("CONIN$", "r", stdin);    // Redirect stdin to the console
+
+    // Ask the user for the executable path
+    std::string exePaths;
+    std::cout << "Please enter the full path of the executable you want to launch: ";
+    getline(std::cin, exePaths);  // Get input from the user
+
+    // Set up process startup info
+    STARTUPINFO si = { sizeof(si) };
+    PROCESS_INFORMATION pi;
+
+    if (exePath.empty()) {
+        std::cout << L"Error: No path provided." << std::endl;
+        return;
+    }
+
+    // Try loading the executable as a DLL (in case it's a DLL file, adjust this method as necessary)
+    HMODULE hModule = LoadLibrary(exePath.c_str());
+
+    if (hModule == NULL) {
+        DWORD dwError = GetLastError();
+        std::cout << L"Failed to load the executable as a DLL. Error code: " << dwError << std::endl;
+    } else {
+        std::cout << L"Executable loaded successfully." << std::endl;
+        FreeLibrary(hModule);  // Unload the DLL after usage
+    }
+    FreeConsole();
+}
 
 
 // #include <Python.h>
