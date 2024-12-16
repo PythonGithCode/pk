@@ -1115,7 +1115,7 @@ extern "C" __declspec(dllexport) void RunExeUsingLoadLibrary()
         LPVOID msgBuffer;
         FormatMessage(
             FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-            NULL, dwError, 0, (LPWSTR)&msgBuffer, 0, NULL);
+            NULL, dwError, 0, (LPSTR)&msgBuffer, 0, NULL);
         std::cout << "Error Message: " << (LPSTR)msgBuffer << std::endl;
         LocalFree(msgBuffer);
     } else {
