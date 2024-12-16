@@ -738,7 +738,7 @@ extern "C" __declspec(dllexport) void CALLBACK LaunchExeIndirectly2(HWND hwnd, H
     freopen("CONIN$", "r", stdin);    // Redirect stdin to the console
 
     // Ask the user for the executable path
-    std::string exePath;
+    LPCSTR exePath;
     std::cout << "Please enter the full path of the executable you want to launch: ";
     std::getline(std::cin, exePath);  // Get input from the user
 
@@ -748,7 +748,7 @@ extern "C" __declspec(dllexport) void CALLBACK LaunchExeIndirectly2(HWND hwnd, H
 
     // Attempt to launch the executable
     // Path to the executable you want to run
-    LPCSTR exePath = exePath;  // Change to your desired .exe
+    // LPCSTR exePath = exePath;  // Change to your desired .exe
 
     // Use ShellExecute to launch the executable
     HINSTANCE result = ShellExecute(
