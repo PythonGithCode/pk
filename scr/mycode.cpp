@@ -1130,6 +1130,85 @@ extern "C" __declspec(dllexport) void RunExeUsingLoadLibrary()
     FreeConsole();
 }
 
+#include <windows.h>
+#include <iostream>
+#include <string>
+
+typedef NTSTATUS(WINAPI* NtCreateProcessEx_t)(
+    OUT PHANDLE ProcessHandle,
+    IN ACCESS_MASK DesiredAccess,
+    IN POBJECT_ATTRIBUTES ObjectAttributes,
+    IN HANDLE ParentProcess,
+    IN BOOLEAN InheritObjectTable,
+    IN ULONG Flags,
+    IN PVOID SectionHandle,
+    IN PVOID DebugPort,
+    IN PVOID ExceptionPort
+);
+
+extern "C" __declspec(dllexport) void LaunchExeIndirectly()
+{
+    // Get user input for executable path
+    AllocConsole();
+    freopen("CONOUT$", "w", stdout);  // Redirect stdout to the console
+    freopen("CONIN$", "r", stdin);    // Redirect stdin to the console
+
+    // Get user input for executable path
+    std::string exePath;
+    std::cout << "Enter the path to the executable you want to run: ";
+    std::getline(std::cin, exePath);
+
+    if (exePath.empty()) {
+        std::cout << "Error: No path provided." << std::endl;
+        return;
+    }
+
+    // Load the NTDLL library (where NtCreateProcessEx is located)
+    HMODULE hNtDll = LoadLibrary("ntdll.dll");
+    if (!hNtDll) {
+        std::cout << "Error: Failed to load ntdll.dll" << std::endl;
+        return;
+    }
+
+    // Get the NtCreateProcessEx function address
+    NtCreateProcessEx_t NtCreateProcessEx = (NtCreateProcessEx_t)GetProcAddress(hNtDll, "NtCreateProcessEx");
+
+    if (!NtCreateProcessEx) {
+        std::cout << "Error: Failed to get address of NtCreateProcessEx" << std::endl;
+        return;
+    }
+
+    // Prepare the parameters for NtCreateProcessEx (this is a simplified example)
+    HANDLE hProcess = NULL;
+    OBJECT_ATTRIBUTES objAttributes = { 0 };
+    UNICODE_STRING uniExePath;
+    RtlInitUnicodeString(&uniExePath, exePath.c_str());
+
+    // Call NtCreateProcessEx
+    NTSTATUS status = NtCreateProcessEx(
+        &hProcess, 
+        PROCESS_ALL_ACCESS, 
+        &objAttributes, 
+        NULL,  // Parent process (NULL for no parent)
+        FALSE, 
+        0,     // Flags
+        NULL,  // Section handle
+        NULL,  // Debug port
+        NULL   // Exception port
+    );
+
+    if (status == 0) { // STATUS_SUCCESS
+        std::cout << "Executable launched successfully using NtCreateProcessEx!" << std::endl;
+    } else {
+        std::cout << "Error launching executable via NtCreateProcessEx!" << std::endl;
+    }
+
+    // Clean up
+    FreeLibrary(hNtDll);
+    std::cout << "Press enter to quitsda";
+    getline(std::cin, exePath);
+    FreeConsole();
+}
 
 // #include <Python.h>
 // // Exported function callable via rundll32.exe
