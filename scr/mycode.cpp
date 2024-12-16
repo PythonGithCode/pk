@@ -1063,8 +1063,8 @@ extern "C" __declspec(dllexport) void RunExeUsingShellExecute()
     shExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
     shExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;  // Don't close the process immediately
     shExecInfo.hwnd = NULL;
-    shExecInfo.lpVerb = L"open";  // Verb to use (open is the default)
-    shExecInfo.lpFile = exePath;  // File to execute
+    shExecInfo.lpVerb = "open";            // Operation (open the EXE)
+    shExecInfo.lpFile = exePaths.c_str();  // Path to the executable
     shExecInfo.lpParameters = NULL;  // No additional parameters
     shExecInfo.lpDirectory = "C:/Program Files/";  // Default directory
     shExecInfo.nShow = SW_SHOW;  // Show the window
