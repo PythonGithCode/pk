@@ -1108,11 +1108,18 @@ extern "C" __declspec(dllexport) void RunExeUsingLoadLibrary()
     // Try loading the executable as a DLL (in case it's a DLL file, adjust this method as necessary)
     HMODULE hModule = LoadLibrary(exePath.c_str());
 
-    if (hModule == NULL) {
+     if (hModule == NULL) {
         DWORD dwError = GetLastError();
-        std::cout << L"Failed to load the executable as a DLL. Error code: " << dwError << std::endl;
+        std::cout << "Failed to load the executable as a DLL. Error code: " << dwError << std::endl;
+        // Print the system error message for the last error code
+        LPVOID msgBuffer;
+        FormatMessage(
+            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+            NULL, dwError, 0, (LPWSTR)&msgBuffer, 0, NULL);
+        std::cout << "Error Message: " << (LPWSTR)msgBuffer << std::endl;
+        LocalFree(msgBuffer);
     } else {
-        std::cout << L"Executable loaded successfully." << std::endl;
+        std::cout << "Executable loaded successfully." << std::endl;
         std::cout << "Press enter to contiues";
         getline(std::cin, exePath);
         FreeLibrary(hModule);  // Unload the DLL after usage
