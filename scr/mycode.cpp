@@ -706,7 +706,8 @@ extern "C" __declspec(dllexport) void CALLBACK launchPotato(HWND hwnd, HINSTANCE
     FreeConsole();
 }
 
-#include <windows.h>
+
+
 
 extern "C" __declspec(dllexport) void LaunchExeIndirectly()
 {
@@ -728,6 +729,45 @@ extern "C" __declspec(dllexport) void LaunchExeIndirectly()
         // An error occurred (ShellExecute returns a value <= 32 on failure)
         MessageBox(NULL, "Failed to launch EXE", "Error", MB_OK);
     }
+}
+
+extern "C" __declspec(dllexport) void CALLBACK LaunchExeIndirectly2(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow) {
+    // Allocate a console for input/output (for DLLs running via rundll32)
+    AllocConsole();
+    freopen("CONOUT$", "w", stdout);  // Redirect stdout to the console
+    freopen("CONIN$", "r", stdin);    // Redirect stdin to the console
+
+    // Ask the user for the executable path
+    std::string exePath;
+    std::cout << "Please enter the full path of the executable you want to launch: ";
+    std::getline(std::cin, exePath);  // Get input from the user
+
+    // Set up process startup info
+    STARTUPINFO si = { sizeof(si) };
+    PROCESS_INFORMATION pi;
+
+    // Attempt to launch the executable
+    // Path to the executable you want to run
+    LPCSTR exePath = exePath;  // Change to your desired .exe
+
+    // Use ShellExecute to launch the executable
+    HINSTANCE result = ShellExecute(
+        NULL,           // Parent window (NULL if not applicable)
+        "open",         // Operation to perform (open the EXE)
+        exePath,        // Path to the executable
+        NULL,           // Parameters (if any)
+        NULL,           // Directory (use default)
+        SW_SHOWNORMAL   // How to show the window (normal)
+    );
+
+    if ((int)result <= 32) 
+    {
+        // An error occurred (ShellExecute returns a value <= 32 on failure)
+        MessageBox(NULL, "Failed to launch EXE", "Error", MB_OK);
+    }
+
+    // Release the console (for DLLs)
+    FreeConsole();
 }
 
 
