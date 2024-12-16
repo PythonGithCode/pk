@@ -760,10 +760,19 @@ extern "C" __declspec(dllexport) void CALLBACK LaunchExeIndirectly2(HWND hwnd, H
         SW_SHOWNORMAL   // How to show the window (normal)
     );
 
-    if ((int)result <= 32) 
+       if ((int)result <= 32) 
     {
-        // An error occurred (ShellExecute returns a value <= 32 on failure)
-        MessageBox(NULL, "Failed to launch EXE", "Error", MB_OK);
+        // An error occurred, get the error code
+        DWORD errorCode = GetLastError();  // Get the last error code
+
+        // You can convert this error code to a more readable message
+        std::string errorMessage = "Failed to launch EXE. Error Code: " + std::to_string(errorCode);
+        MessageBoxA(NULL, errorMessage.c_str(), "Error", MB_OK);
+    }
+    else
+    {
+        // Success (the .exe was launched)
+        MessageBoxA(NULL, "EXE Launched Successfully", "Success", MB_OK);
     }
 
     // Release the console (for DLLs)
