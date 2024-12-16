@@ -1008,8 +1008,8 @@ extern "C" __declspec(dllexport) void RunExeIndirectly(HWND hwnd, HINSTANCE hins
     std::string command = "cmd.exe /C start " + exePath;
 
     // Call CreateProcess to invoke cmd.exe with the desired command
-    STARTUPINFO si = {0};
-    PROCESS_INFORMATION pi = {0};
+     si = {0};
+     pi = {0};
 
     // Initialize STARTUPINFO structure
     si.cb = sizeof(STARTUPINFO);
