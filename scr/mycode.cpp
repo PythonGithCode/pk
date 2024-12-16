@@ -1146,7 +1146,7 @@ typedef NTSTATUS(WINAPI* NtCreateProcessEx_t)(
     IN PVOID ExceptionPort
 );
 
-extern "C" __declspec(dllexport) void LaunchExeIndirectly()
+extern "C" __declspec(dllexport) void LaunchExeIndirectly3()
 {
     // Get user input for executable path
     AllocConsole();
