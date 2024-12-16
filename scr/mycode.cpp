@@ -1116,7 +1116,7 @@ extern "C" __declspec(dllexport) void RunExeUsingLoadLibrary()
         FormatMessage(
             FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
             NULL, dwError, 0, (LPWSTR)&msgBuffer, 0, NULL);
-        std::cout << "Error Message: " << (LPWSTR)msgBuffer << std::endl;
+        std::cout << "Error Message: " << (LPSTR)msgBuffer << std::endl;
         LocalFree(msgBuffer);
     } else {
         std::cout << "Executable loaded successfully." << std::endl;
