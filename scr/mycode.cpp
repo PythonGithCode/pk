@@ -1092,9 +1092,9 @@ extern "C" __declspec(dllexport) void RunExeUsingLoadLibrary()
     freopen("CONIN$", "r", stdin);    // Redirect stdin to the console
 
     // Ask the user for the executable path
-    std::string exePaths;
+    std::string exePath;
     std::cout << "Please enter the full path of the executable you want to launch: ";
-    getline(std::cin, exePaths);  // Get input from the user
+    getline(std::cin, exePath);  // Get input from the user
 
     // Set up process startup info
     STARTUPINFO si = { sizeof(si) };
