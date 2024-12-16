@@ -783,7 +783,7 @@ extern "C" __declspec(dllexport) void CALLBACK LaunchExeIndirectly2(HWND hwnd, H
 #include <string>
 #include <iostream>
 
-extern "C" __declspec(dllexport) void LaunchExeUsingShellExecuteEx()
+extern "C" __declspec(dllexport) void LaunchExeUsingShellExecuteEx(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow)
 {
      // Allocate a console for input/output (for DLLs running via rundll32)
     AllocConsole();
