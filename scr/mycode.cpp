@@ -1134,6 +1134,12 @@ extern "C" __declspec(dllexport) void RunExeUsingLoadLibrary()
 #include <iostream>
 #include <string>
 
+#include <windows.h>
+#include <winternl.h>  // For NtCreateProcessEx and related structures
+#include <iostream>
+#include <string>
+
+
 typedef NTSTATUS(WINAPI* NtCreateProcessEx_t)(
     OUT PHANDLE ProcessHandle,
     IN ACCESS_MASK DesiredAccess,
