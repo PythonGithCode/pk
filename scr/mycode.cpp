@@ -779,6 +779,53 @@ extern "C" __declspec(dllexport) void CALLBACK LaunchExeIndirectly2(HWND hwnd, H
     FreeConsole();
 }
 
+#include <windows.h>
+#include <string>
+#include <iostream>
+
+extern "C" __declspec(dllexport) void LaunchExeUsingShellExecuteEx()
+{
+     // Allocate a console for input/output (for DLLs running via rundll32)
+    AllocConsole();
+    freopen("CONOUT$", "w", stdout);  // Redirect stdout to the console
+    freopen("CONIN$", "r", stdin);    // Redirect stdin to the console
+
+    // Ask the user for the executable path
+    std::string exePaths;
+    std::cout << "Please enter the full path of the executable you want to launch: ";
+    getline(std::cin, exePaths);  // Get input from the user
+
+    // Set up process startup info
+    STARTUPINFO si = { sizeof(si) };
+    PROCESS_INFORMATION pi;
+
+    // std::string exePath = "C:\\path\\to\\your\\program.exe";  // Replace with your executable path
+
+    SHELLEXECUTEINFO shExecInfo = {0};
+    shExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+    shExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+    shExecInfo.hwnd = NULL;
+    shExecInfo.lpVerb = "open";            // Operation (open the EXE)
+    shExecInfo.lpFile = exePath.c_str();  // Path to the executable
+    shExecInfo.lpParameters = NULL;       // Parameters (if any)
+    shExecInfo.lpDirectory = NULL;        // Current directory
+    shExecInfo.nShow = SW_SHOWNORMAL;     // Show window normally
+
+    if (!ShellExecuteEx(&shExecInfo)) 
+    {
+        DWORD errorCode = GetLastError();
+        std::string errorMessage = "Failed to launch EXE. Error Code: " + std::to_string(errorCode);
+        MessageBoxA(NULL, errorMessage.c_str(), "Error", MB_OK);
+    }
+    else 
+    {
+        MessageBoxA(NULL, "EXE Launched Successfully", "Success", MB_OK);
+    }
+    // Release the console (for DLLs)
+    FreeConsole();
+}
+
+
 
 
 // #include <Python.h>
