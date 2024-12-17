@@ -15,75 +15,86 @@
 #include "core/geometry_type.hpp"
 #include "core/strong_typedef_type.hpp"
 
-Window *FindWindowById(WindowClass cls, WindowNumber number);
-Window *FindWindowByClass(WindowClass cls);
-Window *GetMainWindow();
-void ChangeWindowOwner(Owner old_owner, Owner new_owner);
+// Export macro definition
+#ifdef _WIN32
+  #ifdef BUILDING_WINDOW_FUNC  // This will be defined when building the DLL or shared library
+    #define EXPORT __declspec(dllexport)
+  #else
+    #define EXPORT __declspec(dllimport)
+  #endif
+#else
+  #define EXPORT __attribute__((visibility("default")))  // For Linux/GCC/Clang
+#endif
+
+EXPORT Window *FindWindowById(WindowClass cls, WindowNumber number);
+EXPORT Window *FindWindowByClass(WindowClass cls);
+EXPORT Window *GetMainWindow();
+EXPORT void ChangeWindowOwner(Owner old_owner, Owner new_owner);
 
 template<typename T, std::enable_if_t<std::is_base_of<StrongTypedefBase, T>::value, int> = 0>
-Window *FindWindowById(WindowClass cls, T number)
+EXPORT Window *FindWindowById(WindowClass cls, T number)
 {
-	return FindWindowById(cls, number.base());
+    return FindWindowById(cls, number.base());
 }
 
-void ResizeWindow(Window *w, int x, int y, bool clamp_to_screen = true, bool schedule_resize = true);
-int PositionMainToolbar(Window *w);
-int PositionStatusbar(Window *w);
-int PositionNewsMessage(Window *w);
-int PositionNetworkChatWindow(Window *w);
+EXPORT void ResizeWindow(Window *w, int x, int y, bool clamp_to_screen = true, bool schedule_resize = true);
+EXPORT int PositionMainToolbar(Window *w);
+EXPORT int PositionStatusbar(Window *w);
+EXPORT int PositionNewsMessage(Window *w);
+EXPORT int PositionNetworkChatWindow(Window *w);
 
-int GetMainViewTop();
-int GetMainViewBottom();
+EXPORT int GetMainViewTop();
+EXPORT int GetMainViewBottom();
 
-void InitWindowSystem();
-void UnInitWindowSystem();
-void ResetWindowSystem();
-void SetupColoursAndInitialWindow();
-void InputLoop();
+EXPORT void InitWindowSystem();
+EXPORT void UnInitWindowSystem();
+EXPORT void ResetWindowSystem();
+EXPORT void SetupColoursAndInitialWindow();
+EXPORT void InputLoop();
 
-void InvalidateWindowData(WindowClass cls, WindowNumber number, int data = 0, bool gui_scope = false);
-void InvalidateWindowClassesData(WindowClass cls, int data = 0, bool gui_scope = false);
+EXPORT void InvalidateWindowData(WindowClass cls, WindowNumber number, int data = 0, bool gui_scope = false);
+EXPORT void InvalidateWindowClassesData(WindowClass cls, int data = 0, bool gui_scope = false);
 
 template<typename T, std::enable_if_t<std::is_base_of<StrongTypedefBase, T>::value, int> = 0>
-void InvalidateWindowData(WindowClass cls, T number, int data = 0, bool gui_scope = false)
+EXPORT void InvalidateWindowData(WindowClass cls, T number, int data = 0, bool gui_scope = false)
 {
-	InvalidateWindowData(cls, number.base(), data, gui_scope);
+    InvalidateWindowData(cls, number.base(), data, gui_scope);
 }
 
-void CloseNonVitalWindows();
-void CloseAllNonVitalWindows();
-void DeleteAllMessages();
-void CloseConstructionWindows();
-void HideVitalWindows();
-void ShowVitalWindows();
+EXPORT void CloseNonVitalWindows();
+EXPORT void CloseAllNonVitalWindows();
+EXPORT void DeleteAllMessages();
+EXPORT void CloseConstructionWindows();
+EXPORT void HideVitalWindows();
+EXPORT void ShowVitalWindows();
 
 /**
  * Re-initialize all windows.
  * @param zoom_changed Set if windows are being re-initialized due to a zoom level changed.
  */
-void ReInitAllWindows(bool zoom_changed);
+EXPORT void ReInitAllWindows(bool zoom_changed);
 
-void SetWindowWidgetDirty(WindowClass cls, WindowNumber number, WidgetID widget_index);
-void SetWindowDirty(WindowClass cls, WindowNumber number);
-void SetWindowClassesDirty(WindowClass cls);
-
-template<typename T, std::enable_if_t<std::is_base_of<StrongTypedefBase, T>::value, int> = 0>
-void SetWindowDirty(WindowClass cls, T number)
-{
-	SetWindowDirty(cls, number.base());
-}
-
-void CloseWindowById(WindowClass cls, WindowNumber number, bool force = true, int data = 0);
-void CloseWindowByClass(WindowClass cls, int data = 0);
+EXPORT void SetWindowWidgetDirty(WindowClass cls, WindowNumber number, WidgetID widget_index);
+EXPORT void SetWindowDirty(WindowClass cls, WindowNumber number);
+EXPORT void SetWindowClassesDirty(WindowClass cls);
 
 template<typename T, std::enable_if_t<std::is_base_of<StrongTypedefBase, T>::value, int> = 0>
-void CloseWindowById(WindowClass cls, T number, bool force = true, int data = 0)
+EXPORT void SetWindowDirty(WindowClass cls, T number)
 {
-	CloseWindowById(cls, number.base(), force, data);
+    SetWindowDirty(cls, number.base());
 }
 
-bool EditBoxInGlobalFocus();
-bool FocusedWindowIsConsole();
-Point GetCaretPosition();
+EXPORT void CloseWindowById(WindowClass cls, WindowNumber number, bool force = true, int data = 0);
+EXPORT void CloseWindowByClass(WindowClass cls, int data = 0);
+
+template<typename T, std::enable_if_t<std::is_base_of<StrongTypedefBase, T>::value, int> = 0>
+EXPORT void CloseWindowById(WindowClass cls, T number, bool force = true, int data = 0)
+{
+    CloseWindowById(cls, number.base(), force, data);
+}
+
+EXPORT bool EditBoxInGlobalFocus();
+EXPORT bool FocusedWindowIsConsole();
+EXPORT Point GetCaretPosition();
 
 #endif /* WINDOW_FUNC_H */
