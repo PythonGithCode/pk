@@ -1,10 +1,18 @@
-add_subdirectory(api)
+# Add subdirectory for 'api' if it exists
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/script/api")
+    add_subdirectory(api)
+else()
+    message(WARNING "Directory 'api' not found, skipping 'add_subdirectory'.")
+endif()
 
+# Check if OPTION_TOOLS_ONLY is enabled
 if(OPTION_TOOLS_ONLY)
     return()
 endif()
 
-add_files(
+# Define the target for your project, assuming it is 'MyCppProject'
+# Make sure that 'MyCppProject' is the name of your target (e.g., an executable or library)
+target_sources(MyCppProject PRIVATE
     script_cmd.h
     script_config.cpp
     script_config.hpp
