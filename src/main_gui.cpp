@@ -50,6 +50,13 @@
 
 #include "safeguards.h"
 
+// Define export macro based on platform
+#ifdef _WIN32
+  #define EXPORT_API __declspec(dllexport)
+#else
+  #define EXPORT_API __attribute__((visibility("default")))
+#endif
+
 /**
  * This code is shared for the majority of the pushbuttons.
  * Handles e.g. the pressing of a button (to build things), playing of click sound and sets certain parameters
@@ -60,7 +67,7 @@
  * @param mode Tile highlighting mode, e.g. drawing a rectangle or a dot on the ground
  * @return true if the button is clicked, false if it's unclicked
  */
-bool HandlePlacePushButton(Window *w, WidgetID widget, CursorID cursor, HighLightStyle mode)
+EXPORT_API bool HandlePlacePushButton(Window *w, WidgetID widget, CursorID cursor, HighLightStyle mode)
 {
 	if (w->IsWidgetDisabled(widget)) return false;
 
@@ -78,7 +85,7 @@ bool HandlePlacePushButton(Window *w, WidgetID widget, CursorID cursor, HighLigh
 }
 
 
-void CcPlaySound_EXPLOSION(Commands, const CommandCost &result, TileIndex tile)
+EXPORT_API void CcPlaySound_EXPLOSION(Commands, const CommandCost &result, TileIndex tile)
 {
 	if (result.Succeeded() && _settings_client.sound.confirm) SndPlayTileFx(SND_12_EXPLOSION, tile);
 }
@@ -90,7 +97,7 @@ void CcPlaySound_EXPLOSION(Commands, const CommandCost &result, TileIndex tile)
  * @return Returns \c true if zooming step could be done, \c false if further zooming is not possible.
  * @note No button handling or what so ever is done.
  */
-bool DoZoomInOutWindow(ZoomStateChange how, Window *w)
+EXPORT_API bool DoZoomInOutWindow(ZoomStateChange how, Window *w)
 {
 	Viewport *vp;
 
@@ -137,7 +144,7 @@ bool DoZoomInOutWindow(ZoomStateChange how, Window *w)
 	return true;
 }
 
-void ZoomInOrOutToCursorWindow(bool in, Window *w)
+EXPORT_API void ZoomInOrOutToCursorWindow(bool in, Window *w)
 {
 	assert(w != nullptr);
 
@@ -154,7 +161,7 @@ void ZoomInOrOutToCursorWindow(bool in, Window *w)
 	}
 }
 
-void FixTitleGameZoom(int zoom_adjust)
+EXPORT_API void FixTitleGameZoom(int zoom_adjust)
 {
 	if (_game_mode != GM_MENU) return;
 
@@ -526,19 +533,19 @@ static WindowDesc _main_window_desc(__FILE__, __LINE__,
  * @param keycode The keycode that was pressed by the user.
  * @return True iff the keycode matches one of the hotkeys for 'quit'.
  */
-bool IsQuitKey(uint16_t keycode)
+EXPORT_API bool IsQuitKey(uint16_t keycode)
 {
 	int num = MainWindow::hotkeys.CheckMatch(keycode);
 	return num == GHK_QUIT;
 }
 
 
-void ShowSelectGameWindow();
+EXPORT_API void ShowSelectGameWindow();
 
 /**
  * Initialise the default colours (remaps and the likes), and load the main windows.
  */
-void SetupColoursAndInitialWindow()
+EXPORT_API void SetupColoursAndInitialWindow()
 {
 	for (uint i = 0; i != 16; i++) {
 		const byte *b = GetNonSprite(GENERAL_SPRITE_COLOUR(i), SpriteType::Recolour);
@@ -566,7 +573,7 @@ void SetupColoursAndInitialWindow()
 /**
  * Show the vital in-game windows.
  */
-void ShowVitalWindows()
+EXPORT_API void ShowVitalWindows()
 {
 	AllocateToolbar();
 
@@ -580,7 +587,7 @@ void ShowVitalWindows()
  * Size of the application screen changed.
  * Adapt the game screen-size, re-allocate the open windows, and repaint everything
  */
-void GameSizeChanged()
+EXPORT_API void GameSizeChanged()
 {
 	_cur_resolution.width  = _screen.width;
 	_cur_resolution.height = _screen.height;
